@@ -91,3 +91,43 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });
+
+// 🗑 Eliminar
+async function eliminarRegistro(id) {
+  if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
+  const res = await fetch(`/api/registro/${id}`, { method: 'DELETE' });
+  if (res.ok) {
+    alert('✅ Registro eliminado');
+    cargarRegistrosTodos(); // Recarga la vista
+  } else {
+    alert('❌ Error al eliminar');
+  }
+}
+
+// ✏️ Editar (ejemplo básico con prompt, luego puedes usar modal bonito)
+async function editarRegistro(id) {
+  const registro = await fetch(`/api/registros`).then(r => r.json()).then(r => r.find(x => x.id === id));
+  if (!registro) return alert('❌ Registro no encontrado');
+
+  const nuevoCosto = prompt('Nuevo costo:', registro.costo || '');
+  const nuevoPago = prompt('Nuevo método de pago:', registro.metodo_pago || '');
+
+  const body = {
+    ...registro,
+    costo: parseFloat(nuevoCosto) || null,
+    metodo_pago: nuevoPago || null
+  };
+
+  const res = await fetch(`/api/registro/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) {
+    alert('✅ Registro actualizado');
+    cargarRegistrosTodos();
+  } else {
+    alert('❌ Error al actualizar');
+  }
+}

@@ -36,6 +36,7 @@ async function cargarRegistrosTodos() {
           <th>Costo</th>
           <th>Comisión</th>
           <th>Ganancia Kike</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -57,6 +58,10 @@ async function cargarRegistrosTodos() {
         <td>S/${parseFloat(r.costo).toFixed(2)}</td>
         <td>S/${parseFloat(r.comision).toFixed(2)}</td>
         <td>S/${parseFloat(r.ganancia_kike).toFixed(2)}</td>
+            <td>
+            <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
+          </td>
       </tr>
     `;
 
