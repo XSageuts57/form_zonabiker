@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<style>
+  /* Impresión */
+  @media print {
+    nav, #btn-pdf, #btn-wsp {
+      display: none !important;
+    }
+
+    body {
+      background-color: white !important;
+      color: black;
+      font-size: 12pt;
+    }
+
+    .card {
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      box-shadow: none !important;
+    }
+
+    .card-body {
+      padding: 10px;
+    }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 14pt;
+    }
+
+    .card-text {
+      font-size: 12pt;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 16pt;
+    }
+  }
+
+  /* Diseño general tabla */
+  #tabla-pdf {
+    font-family: 'Segoe UI', sans-serif;
+    margin-top: 15px;
+    overflow-x: auto;
+  }
+
+  #tabla-pdf table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  #tabla-pdf th {
+    background: linear-gradient(90deg, #343a40, #495057);
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid #dee2e6;
+  }
+
+  #tabla-pdf td {
+    padding: 10px 12px;
+    color: #212529;
+    font-size: 14px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+    background-color: #ffffff;
+  }
+
+  #tabla-pdf tr:hover td {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Modo oscuro general */
+  body.dark-mode {
+    background-color: #121212 !important;
+    color: #f1f1f1 !important;
+  }
+
+  body.dark-mode .navbar {
+    background-color: #1f1f1f !important;
+  }
+
+  body.dark-mode #toggle-dark {
+    background-color: #f8f9fa;
+    color: #212529;
+  }
+
+  body.dark-mode #tabla-pdf {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+  }
+
+  body.dark-mode #tabla-pdf th {
+    background: linear-gradient(90deg, #2c2c2c, #3c3c3c) !important;
+    color: #ffffff;
+  }
+
+  body.dark-mode #tabla-pdf td {
+    background-color: #2a2a2a;
+    color: #ffffff;
+  }
+
+  body.dark-mode #tabla-pdf tr:hover td {
+    background-color: #3a3a3a;
+  }
+</style>
+
+
+<head>
+  <meta charset="UTF-8">
+  <title>📅 Registros de Hoy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- 🔝 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">Zona Biker</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="/registros-hoy">Registros de Hoy</a></li>
+          <li class="nav-item"><a class="nav-link" href="/registros-todos">Todos los Registros</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🧾 Contenido -->
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">📅 Registros de Hoy</h2>
+
+<div class="text-center mb-4">
+  <button class="btn btn-secondary me-2" id="toggle-dark">🌙 Modo Oscuro</button>
+  <button class="btn btn-danger" id="btn-pdf">📄 Descargar PDF</button>
+  <a class="btn btn-success ms-2" id="btn-wsp" target="_blank">📤 Compartir por WhatsApp</a>
+</div>
+
+    <div id="contenedor-registros" class="row gy-4"></div>
+    
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/html2pdf.bundle.min.js"></script>
+  <script src="js/registros-hoy.js"></script>
+    <script>
+  document.getElementById('toggle-dark').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+</script>
+</body>
+</html>
