@@ -34,6 +34,7 @@ async function cargarRegistrosHoy() {
             <th style="padding: 12px;">Costo</th>
             <th style="padding: 12px;">Comisión</th>
             <th style="padding: 12px;">Ganancia Kike</th>
+            <th style="padding: 12px;">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +56,10 @@ async function cargarRegistrosHoy() {
         <td style="padding: 10px;">S/${parseFloat(r.costo).toFixed(2)}</td>
         <td style="padding: 10px;">S/${parseFloat(r.comision).toFixed(2)}</td>
         <td style="padding: 10px;">S/${parseFloat(r.ganancia_kike).toFixed(2)}</td>
+        <td style="padding: 10px;">
+        <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
+      </td>
       </tr>
     `;
 
@@ -118,5 +123,54 @@ async function cargarRegistrosHoy() {
   document.getElementById('btn-wsp').href =
     `https://wa.me/?text=${encodeURIComponent(resumenTexto)}`;
 }
+
+async function eliminarRegistro(id) {
+  if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
+  const res = await fetch(`/api/registro/${id}`, { method: 'DELETE' });
+  if (res.ok) {
+    alert('✅ Registro eliminado');
+    cargarRegistrosHoy();
+  } else {
+    alert('❌ Error al eliminar');
+  }
+}
+
+async function editarRegistro(id) {
+  const registros = await fetch('/api/registros').then(r => r.json());
+  const registro = registros.find(x => x.id === id);
+  if (!registro) return alert('❌ Registro no encontrado');
+
+  const marca = prompt('🏍️ Marca:', registro.marca);
+  const modelo = prompt('📘 Modelo:', registro.modelo);
+  const cilindrada = prompt('⚙️ Cilindrada:', registro.cilindrada);
+  const kilometraje = prompt('🧭 Kilometraje:', registro.kilometraje);
+  const cliente = prompt('👤 Cliente:', registro.cliente);
+  const empleado = prompt('👨‍🔧 Empleado:', registro.empleado);
+  const fecha = prompt('📅 Fecha (YYYY-MM-DD):', registro.fecha.slice(0, 10));
+  const hora = prompt('⏰ Hora (HH:mm):', registro.hora);
+  const costo = prompt('💰 Costo:', registro.costo);
+  const metodo_pago = prompt('💳 Método de pago:', registro.metodo_pago);
+
+  const body = {
+    marca, modelo, cilindrada, kilometraje,
+    cliente, empleado, fecha, hora,
+    costo: parseFloat(costo) || 0,
+    metodo_pago
+  };
+
+  const res = await fetch(`/api/registro/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) {
+    alert('✅ Registro actualizado');
+    cargarRegistrosHoy();
+  } else {
+    alert('❌ Error al actualizar');
+  }
+}
+
 
 cargarRegistrosHoy();

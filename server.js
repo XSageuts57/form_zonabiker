@@ -86,48 +86,60 @@ app.get('/registros-todos', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'registros-todos.html'));
 });
 
+// 🗑 Eliminar registro
+app.delete('/api/registro/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM registros WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.error('❌ Error al eliminar registro:', err);
+      return res.status(500).send('Error al eliminar');
+    }
+    if (result.affectedRows === 0) return res.status(404).send('Registro no encontrado');
+    res.send('✅ Registro eliminado');
+  });
+});
+
+// ✏️ Editar TODOS los campos del registro
+app.put('/api/registro/:id', (req, res) => {
+  const { id } = req.params;
+  const {
+    marca, modelo, cilindrada, kilometraje,
+    cliente, empleado, fecha, hora,
+    costo, metodo_pago
+  } = req.body;
+
+  const comision = empleado.toLowerCase() !== 'kike' ? costo * 0.5 : 0;
+  const gananciaKike = costo - comision;
+
+  const query = `
+    UPDATE registros SET
+      marca = ?, modelo = ?, cilindrada = ?, kilometraje = ?,
+      cliente = ?, empleado = ?, fecha = ?, hora = ?,
+      costo = ?, metodo_pago = ?, comision = ?, ganancia_kike = ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [
+    marca, modelo, cilindrada, kilometraje,
+    cliente, empleado, fecha, hora,
+    costo, metodo_pago, comision, gananciaKike,
+    id
+  ], (err, result) => {
+    if (err) {
+      console.error('❌ Error al actualizar registro:', err);
+      return res.status(500).send('Error al actualizar');
+    }
+    if (result.affectedRows === 0) return res.status(404).send('Registro no encontrado');
+    res.send('✅ Registro actualizado');
+  });
+});
+
+
+
 // 🔊 Escuchar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });
 
-// 🗑 Eliminar
-async function eliminarRegistro(id) {
-  if (!confirm('¿Seguro que deseas eliminar este registro?')) return;
-  const res = await fetch(`/api/registro/${id}`, { method: 'DELETE' });
-  if (res.ok) {
-    alert('✅ Registro eliminado');
-    cargarRegistrosTodos(); // Recarga la vista
-  } else {
-    alert('❌ Error al eliminar');
-  }
-}
-
-// ✏️ Editar (ejemplo básico con prompt, luego puedes usar modal bonito)
-async function editarRegistro(id) {
-  const registro = await fetch(`/api/registros`).then(r => r.json()).then(r => r.find(x => x.id === id));
-  if (!registro) return alert('❌ Registro no encontrado');
-
-  const nuevoCosto = prompt('Nuevo costo:', registro.costo || '');
-  const nuevoPago = prompt('Nuevo método de pago:', registro.metodo_pago || '');
-
-  const body = {
-    ...registro,
-    costo: parseFloat(nuevoCosto) || null,
-    metodo_pago: nuevoPago || null
-  };
-
-  const res = await fetch(`/api/registro/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-
-  if (res.ok) {
-    alert('✅ Registro actualizado');
-    cargarRegistrosTodos();
-  } else {
-    alert('❌ Error al actualizar');
-  }
-}
