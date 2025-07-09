@@ -32,6 +32,8 @@ async function cargarRegistrosTodos() {
           <th>Cliente</th>
           <th>Moto</th>
           <th>Empleado</th>
+          <th>Placa</th>
+          <th>Servicios</th>
           <th>Pago</th>
           <th>Costo</th>
           <th>Comisión</th>
@@ -54,6 +56,8 @@ async function cargarRegistrosTodos() {
         <td>${r.cliente}</td>
         <td>${r.marca} ${r.modelo}</td>
         <td>${r.empleado}</td>
+        <td>${r.placa || '-'}</td>
+        <td>${r.servicios || '-'}</td>
         <td>${r.metodo_pago ?? 'N/A'}</td>
         <td>S/${parseFloat(r.costo).toFixed(2)}</td>
         <td>S/${parseFloat(r.comision).toFixed(2)}</td>
@@ -69,6 +73,8 @@ async function cargarRegistrosTodos() {
 📅 ${fechaFormateada} ⏰ ${r.hora}
 👤 Cliente: ${r.cliente}
 👨‍🔧 Empleado: ${r.empleado}
+🔢 Placa: ${r.placa || 'Sin placa'}
+🛠 Servicios: ${r.servicios || 'Ninguno'}
 💳 Pago: ${r.metodo_pago ?? 'N/A'}
 💰 Costo: S/${parseFloat(r.costo).toFixed(2)}
 🧾 Comisión: S/${parseFloat(r.comision).toFixed(2)}
@@ -111,6 +117,7 @@ async function cargarRegistrosTodos() {
         </tr>
       </thead>
       <tbody>
+      
   `;
 
 Object.entries(resumenPorDia).forEach(([fecha, data]) => {
@@ -175,22 +182,24 @@ async function editarRegistro(id) {
   const registro = registros.find(x => x.id === id);
   if (!registro) return alert('❌ Registro no encontrado');
 
+  const servicios = prompt('🛠 Servicios realizados:', registro.servicios);
   const marca = prompt('🏍️ Marca:', registro.marca);
   const modelo = prompt('📘 Modelo:', registro.modelo);
   const cilindrada = prompt('⚙️ Cilindrada:', registro.cilindrada);
   const kilometraje = prompt('🧭 Kilometraje:', registro.kilometraje);
   const cliente = prompt('👤 Cliente:', registro.cliente);
   const empleado = prompt('👨‍🔧 Empleado:', registro.empleado);
+  const placa = prompt('🔢 Placa:', registro.placa);
   const fecha = prompt('📅 Fecha (YYYY-MM-DD):', registro.fecha.slice(0,10));
   const hora = prompt('⏰ Hora (HH:mm):', registro.hora);
   const costo = prompt('💰 Costo:', registro.costo);
   const metodo_pago = prompt('💳 Método de pago:', registro.metodo_pago);
 
   const body = {
-    marca, modelo, cilindrada, kilometraje,
+    marca, modelo, cilindrada, kilometraje, placa,
     cliente, empleado, fecha, hora,
     costo: parseFloat(costo) || 0,
-    metodo_pago
+    metodo_pago, servicios
   };
 
   const res = await fetch(`/api/registro/${id}`, {

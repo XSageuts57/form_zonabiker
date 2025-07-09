@@ -378,6 +378,85 @@
       .navbar-brand { font-size: 1.4rem; }
       .navbar-brand::after { height: 40%; }
     }
+    body.light-mode {
+  background: #f9f9f9;
+  color: #222;
+}
+
+body.light-mode .navbar {
+  background: #e0e0e0;
+  color: #000;
+}
+
+body.light-mode h2,
+body.light-mode .navbar-brand {
+  color: #000 !important;
+  text-shadow: none;
+}
+
+body.light-mode form {
+  background: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+body.light-mode .form-label::before {
+  color: #222;
+}
+
+body.light-mode .form-control,
+body.light-mode .form-select {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+body.light-mode .btn-success {
+  background: linear-gradient(135deg, #007bff, #4dabf7);
+  color: #fff;
+}
+
+body.light-mode .stat-card {
+  background: #fff;
+  color: #000;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6); /* placeholder blanco semitransparente */
+}
+
+input.form-control,
+textarea.form-control {
+  color: #fff !important;  /* texto blanco al tipear */
+  background-color: rgba(10, 10, 10, 0.8); /* fondo oscuro ya lo tienes, esto es por seguridad */
+}
+
+body.light-mode input.form-control,
+body.light-mode textarea.form-control {
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+body.light-mode input.form-control::placeholder,
+body.light-mode textarea.form-control::placeholder {
+  color: #666;
+}
+body.light-mode .form-label {
+  color: #222;
+}
+body:not(.light-mode) input[type="date"]::-webkit-calendar-picker-indicator,
+body:not(.light-mode) input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+select[name="empleado"] option[value="Kike"] {
+  color: #ff4454;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff4454;
+}
+
+
   </style>
 </head>
 
@@ -386,6 +465,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
     <a class="navbar-brand fw-bold" href="#">🏍️ ZONA BIKER</a>
     <div class="ms-auto d-flex gap-2">
+      <button id="toggle-theme" class="btn btn-light">☀️ Modo Claro</button>
       <a href="/registros-hoy" class="btn btn-primary">📅 Registros de Hoy</a>
       <a href="/registros-todos" class="btn btn-dark">📋 Todos los Registros</a>
     </div>
@@ -425,6 +505,12 @@
           <input type="text" class="form-control" name="kilometraje" />
         </div>
 
+        <!-- PLACA -->
+        <div class="col-md-4">
+          <label class="form-label">Placa</label>
+          <input type="text" class="form-control" name="placa" placeholder="Ej: 1234-ABC" />
+        </div>
+
         <!-- COSTO -->
         <div class="col-md-4">
           <label class="form-label">Costo</label>
@@ -442,10 +528,8 @@
           <label class="form-label">Empleado</label>
           <select name="empleado" class="form-select" required>
             <option value="" disabled selected>Selecciona empleado</option>
-            <option value="Kike">Kike (Dueño)</option>
-            <option value="Carlos">Jose</option>
-            <option value="Luis">Luis</option>
-            <option value="Pedro">Pedro</option>
+            <option value="Kike">Kike</option>
+            <option value="Jose">Jose</option>
           </select>
         </div>
 
@@ -459,6 +543,24 @@
             <option value="Transferencia">Transferencia</option>
             <option value="Efectivo">Efectivo</option>
           </select>
+        </div>
+
+        <!-- SERVICIOS -->
+        <div class="col-md-12">
+          <label class="form-label">Servicios Realizados</label>
+          <textarea class="form-control" name="servicios" rows="3" placeholder="Ej: Desengrasado, cambio de aceite, afinamiento..."></textarea>
+        </div>
+
+        <!-- REPUESTO -->
+        <div class="col-md-6">
+          <label class="form-label">Repuesto(s)</label>
+          <input type="text" class="form-control" name="repuesto" placeholder="Ej: Filtro de aceite, cadena 428..." />
+        </div>
+
+        <!-- GANANCIA REPUESTO -->
+        <div class="col-md-6">
+          <label class="form-label">Costo de Repuesto</label>
+          <input type="text" step="0.01" class="form-control" name="ganancia_repuesto" placeholder="Ej: 10.00" />
         </div>
 
         <!-- FECHA -->
@@ -580,5 +682,25 @@
     });
   });
   </script>
+  <script>
+  const themeBtn = document.getElementById('toggle-theme');
+  const body = document.body;
+
+  function toggleTheme() {
+    body.classList.toggle('light-mode');
+    if (body.classList.contains('light-mode')) {
+      themeBtn.innerHTML = '🌙 Modo Oscuro';
+      themeBtn.classList.remove('btn-light');
+      themeBtn.classList.add('btn-dark');
+    } else {
+      themeBtn.innerHTML = '☀️ Modo Claro';
+      themeBtn.classList.remove('btn-dark');
+      themeBtn.classList.add('btn-light');
+    }
+  }
+
+  themeBtn.addEventListener('click', toggleTheme);
+</script>
+
 </body>
 </html>
