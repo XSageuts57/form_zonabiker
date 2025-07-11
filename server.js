@@ -42,15 +42,27 @@ const query = `
 
 // 📋 Ruta para obtener todos los registros
 app.get('/api/registros', async (req, res) => {
-  const query = 'SELECT * FROM registros ORDER BY fecha DESC, hora DESC';
+  const { desde, hasta } = req.query;
+
+  let query = 'SELECT * FROM registros';
+  const params = [];
+
+  if (desde && hasta) {
+    query += ' WHERE fecha BETWEEN ? AND ?';
+    params.push(desde, hasta);
+  }
+
+  query += ' ORDER BY fecha DESC, hora DESC';
+
   try {
-    const [rows] = await db.query(query);
+    const [rows] = await db.query(query, params);
     res.json(rows);
   } catch (err) {
     console.error('❌ Error al obtener registros:', err);
     res.status(500).send('Error');
   }
 });
+
 
 // 📅 Ruta para obtener registros de hoy
 app.get('/api/registros/hoy', async (req, res) => {

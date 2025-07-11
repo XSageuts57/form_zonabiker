@@ -148,6 +148,23 @@
   <button class="btn btn-secondary me-2" id="toggle-dark">🌙 Modo Oscuro</button>
   <button class="btn btn-danger" id="btn-pdf">📄 Descargar PDF</button>
   <a class="btn btn-success ms-2" id="btn-wsp" target="_blank">📤 Compartir por WhatsApp</a>
+  <div class="container mb-4">
+  <div class="row justify-content-center">
+    <div class="col-md-3">
+      <label>Desde:</label>
+      <input type="date" id="fechaInicio" class="form-control">
+    </div>
+    <div class="col-md-3">
+      <label>Hasta:</label>
+      <input type="date" id="fechaFin" class="form-control">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button class="btn btn-primary w-100 me-2" onclick="filtrarPorFechas()">🔎 Filtrar</button>
+      <button class="btn btn-secondary w-100" onclick="cargarRegistrosHoy()">🔁 Mostrar Hoy</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
     <div id="contenedor-registros" class="row gy-4"></div>
@@ -217,6 +234,171 @@ function cerrarDetallesEmpleado() {
   detalles.innerHTML = '';
   detalles.style.display = 'none';
 }
+async function filtrarPorFechas() {
+  document.getElementById('detalles-empleado').innerHTML = '';
+document.getElementById('detalles-empleado').style.display = 'none';
+  const inicio = document.getElementById('fechaInicio').value;
+  const fin = document.getElementById('fechaFin').value;
+
+  if (!inicio || !fin) {
+    alert("📅 Por favor selecciona ambas fechas.");
+    return;
+  }
+
+  const res = await fetch(`/api/registros?desde=${inicio}&hasta=${fin}`);
+  const registros = await res.json();
+
+  if (registros.length === 0) {
+    document.getElementById('contenedor-registros').innerHTML = `
+      <div class="alert alert-warning">❌ No hay registros entre ${inicio} y ${fin}.</div>`;
+    return;
+  }
+
+  // Reutiliza la lógica de cargarRegistrosHoy pero pásale los registros filtrados
+  renderizarRegistros(registros, `entre ${inicio} y ${fin}`);
+}
+
+function renderizarRegistros(registros, fechaTexto) {
+  const contenedor = document.getElementById('contenedor-registros');
+  if (!registros || registros.length === 0) {
+    contenedor.innerHTML = '<div class="alert alert-warning">No hay registros.</div>';
+    return;
+  }
+
+  let resumenTexto = `📋 *Resumen de lavados - ${fechaTexto}*\n🧼 Motos atendidas: ${registros.length}\n\n`;
+
+  let tabla = `
+    <div id="tabla-pdf" style="overflow-x:auto; padding: 10px;">
+      <h5 class="text-center">Registros ${fechaTexto}</h5>
+      <table class="table table-bordered table-hover" style="
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      ">
+        <thead style="background-color: #212529; color: white;">
+          <tr>
+            <th>Fecha</th><th>Hora</th><th>Cliente</th><th>Moto</th><th>Empleado</th>
+            <th>Placa</th><th>Servicios</th><th>Pago</th><th>Costo</th><th>Ganancia Repuesto</th>
+            <th>Mano Obra</th><th>Comisión</th><th>Utilidad (ZonaBiker)</th><th>Repuesto</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+  const empleados = {};
+  let totalGananciaKike = 0;
+  let totalGananciaRepuesto = 0;
+
+  registros.forEach(r => {
+    const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-PE');
+    const empleado = r.empleado || 'Sin nombre';
+    const costo = parseFloat(r.costo) || 0;
+    const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
+    const manoObra = costo - gananciaRepuesto;
+    const mitadManoObra = manoObra * 0.5;
+
+    let comisionEmpleado = 0;
+    let gananciaKike = 0;
+    if (empleado.toLowerCase() === 'kike') {
+      gananciaKike = manoObra;
+    } else {
+      comisionEmpleado = mitadManoObra;
+      gananciaKike = mitadManoObra;
+    }
+
+    totalGananciaKike += gananciaKike;
+    totalGananciaRepuesto += gananciaRepuesto;
+
+    if (!empleados[empleado]) {
+      empleados[empleado] = { cantidad: 0, comision: 0, costos: [], manoObraTotal: 0, utilidad: 0 };
+    }
+
+    empleados[empleado].cantidad++;
+    empleados[empleado].costos.push(costo);
+    empleados[empleado].manoObraTotal += manoObra;
+    empleados[empleado].comision += comisionEmpleado;
+    empleados[empleado].utilidad += gananciaKike;
+
+    resumenTexto += `🛵 *${r.marca} ${r.modelo}*\n📅 ${fechaFormateada} ⏰ ${r.hora}\n👤 Cliente: ${r.cliente}\n🔢 Placa: ${r.placa || 'No registrada'}\n👨‍🔧 Empleado: ${r.empleado}\n🛠 Servicios: ${r.servicios || 'Ninguno'}\n🔧 Repuestos: ${r.repuesto || 'Ninguno'}\n💳 Pago: ${r.metodo_pago ?? 'N/A'}\n💰 Costo: S/${costo.toFixed(2)}\n🧾 Comisión: S/${parseFloat(r.comision || comisionEmpleado).toFixed(2)}\n👑 Ganancia Kike: S/${gananciaKike.toFixed(2)}\n📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}\n🛠 Mano Obra: S/${manoObra.toFixed(2)}\n────────────────────\n`;
+
+    tabla += `
+      <tr>
+        <td>${fechaFormateada}</td><td>${r.hora}</td><td>${r.cliente}</td>
+        <td>${r.marca} ${r.modelo}</td><td>${r.empleado}</td><td>${r.placa || '-'}</td>
+        <td>${r.servicios || '-'}</td><td>${r.metodo_pago ?? 'N/A'}</td>
+        <td>S/${costo.toFixed(2)}</td><td>S/${gananciaRepuesto.toFixed(2)}</td>
+        <td>S/${manoObra.toFixed(2)}</td><td>S/${comisionEmpleado.toFixed(2)}</td>
+        <td>S/${gananciaKike.toFixed(2)}</td><td>${r.repuesto || '-'}</td>
+        <td>
+          <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
+        </td>
+      </tr>`;
+  });
+
+  tabla += '</tbody></table>';
+
+  tabla += `
+    <h5 class="mt-4 mb-2">📊 Resumen por trabajador (PDF)</h5>
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr><th>Empleado</th><th>Motos Atendidas</th><th>Costos</th><th>Total Bruto</th><th>Comisión</th><th>Mano de Obra</th><th>Utilidad</th></tr>
+      </thead><tbody>`;
+
+  Object.entries(empleados).forEach(([nombre, data]) => {
+    const totalBruto = data.costos.reduce((a, b) => a + b, 0);
+    const porcentaje = nombre.toLowerCase() === 'kike' ? 100 : 50;
+    tabla += `
+      <tr style="cursor: pointer;" onclick='mostrarDetallesEmpleadoFiltrado("${nombre}", ${JSON.stringify(registros)})'>
+        <td>${nombre}</td><td>${data.cantidad}</td>
+        <td>${data.costos.map((c, i) => `${i + 1}° S/${c.toFixed(2)}`).join(', ')}</td>
+        <td>S/${totalBruto.toFixed(2)}</td><td>(${porcentaje}%) S/${data.comision.toFixed(2)}</td>
+        <td>S/${data.manoObraTotal.toFixed(2)}</td><td>S/${data.utilidad.toFixed(2)}</td>
+      </tr>`;
+  });
+
+  tabla += '</tbody></table></div>';
+  tabla += '<div id="detalles-empleado" class="mt-4"></div>';
+
+  const resumenGanancias = `
+    <div class="alert alert-success d-flex justify-content-between align-items-center p-3 mb-3 shadow-sm rounded" style="font-size: 16px;">
+      <div>
+        👑 <strong>Ganancia ZonaBiker:</strong> <span style="font-size: 18px;">S/${totalGananciaKike.toFixed(2)}</span>
+      </div>
+      <div>
+        📦 <strong>Ganancia Repuestos:</strong> <span style="font-size: 18px; color: #0d6efd;">S/${totalGananciaRepuesto.toFixed(2)}</span>
+      </div>
+    </div>`;
+    let tituloTabla = document.createElement("h4");
+      tituloTabla.className = "text-center mb-3 text-primary";
+      tituloTabla.textContent = `🗓️ Mostrando registros ${fechaTexto}`;
+      contenedor.prepend(tituloTabla);
+
+contenedor.innerHTML = resumenGanancias + tabla;
+contenedor.insertAdjacentElement("afterbegin", tituloTabla); // ✅ más seguro
+
+
+  // PDF botón
+  document.getElementById('btn-pdf').addEventListener('click', () => {
+    const contenido = document.getElementById('tabla-pdf');
+    const opt = {
+      margin: [0.3, 0.3, 0.3, 0.3],
+      filename: `registros-${fechaTexto}.pdf`,
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(contenido).save();
+  });
+
+  // WhatsApp resumen
+  document.getElementById('btn-wsp').href =
+    `https://wa.me/?text=${encodeURIComponent(resumenTexto)}`;
+}
+
 
 </script>
 

@@ -1,183 +1,384 @@
 <!DOCTYPE html>
 <html lang="es">
-  <style>
-  @media print {
-    nav, #btn-pdf, #btn-wsp {
-      display: none !important;
-    }
-
-    body {
-      background-color: white !important;
-      color: black;
-      font-size: 12pt;
-    }
-
-    .card {
-      border: 1px solid #ccc;
-      margin-bottom: 15px;
-      box-shadow: none !important;
-    }
-
-    .card-body {
-      padding: 10px;
-    }
-
-    .card-title {
-      font-weight: bold;
-      font-size: 14pt;
-    }
-
-    .card-text {
-      font-size: 12pt;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 16pt;
-    }
-  }
-    table th, table td {
-    border: 1px solid #dee2e6 !important;
-    vertical-align: middle !important;
-  }
-
-  #tabla-pdf {
-    font-family: 'Segoe UI', sans-serif;
-  }
-
-/* Modo oscuro general */
-body.dark-mode {
-  background-color: #121212 !important;
-  color: #f1f1f1 !important;
-}
-
-/* Navbar oscura */
-body.dark-mode .navbar {
-  background-color: #1f1f1f !important;
-}
-
-/* Tabla oscura */
-body.dark-mode #tabla-pdf {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-}
-
-body.dark-mode #tabla-pdf th {
-  background-color: #2c2c2c !important;
-  color: #ffffff;
-}
-
-body.dark-mode #tabla-pdf td {
-  background-color: #2a2a2a;
-  color: #ffffff;
-}
-
-/* Botón de modo oscuro claro cuando está activado */
-body.dark-mode #toggle-dark {
-  background-color: #f8f9fa;
-  color: #212529;
-}
-
-/* Diseño general de tablas */
-#tabla-pdf table {
-  border-radius: 8px;
-  overflow: hidden;
-  border: none;
-}
-
-#tabla-pdf th {
-  background: linear-gradient(90deg, #343a40, #495057);
-  color: #ffffff;
-  font-weight: 600;
-  padding: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-#tabla-pdf td {
-  padding: 10px 12px;
-  background-color: #ffffff;
-  color: #212529;
-  font-size: 14px;
-  border-bottom: 1px solid #dee2e6;
-}
-
-#tabla-pdf tr:hover td {
-  background-color: #f8f9fa;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Para la segunda tabla (resumen) también aplicar estilos */
-#tabla-pdf table + table th {
-  background: linear-gradient(90deg, #0d6efd, #0b5ed7);
-}
-
-/* Modo oscuro mejorado */
-body.dark-mode #tabla-pdf td {
-  background-color: #1f1f1f;
-  color: #e1e1e1;
-}
-
-body.dark-mode #tabla-pdf tr:hover td {
-  background-color: #2c2c2c;
-}
-
-body.dark-mode #tabla-pdf table + table th {
-  background: linear-gradient(90deg, #495057, #6c757d);
-}
-
-
-</style>
-
 <head>
   <meta charset="UTF-8">
-  <title>📋 Todos los Registros</title>
+  <title>📋 Todos los Registros - Zona Biker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    .chk-wsp {
+  transform: scale(1.8);
+  cursor: pointer;
+  accent-color: var(--rojo-zb);
+}
+    :root {
+      --rojo-zb: #ff4454;
+      --dorado-zb: #d4af37;
+      --negro-zb: #000;
+      --sombra: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+body {
+  background-color: #f8f9fa;
+  font-family: 'Poppins', sans-serif; /* Nueva fuente más clara y redondeada */
+  font-size: 1.05rem; /* Tamaño de fuente más grande y legible */
+}
+    
+    /* Navbar personalizada */
+    .navbar-zb {
+      background: linear-gradient(90deg, var(--negro-zb), #1a1a1a);
+      box-shadow: var(--sombra);
+      padding: 0.8rem 1rem;
+    }
+    
+    .navbar-brand-zb {
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: white !important;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    /* Botones con efectos */
+    .btn-zb {
+      transition: all 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-zb:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-zb:active {
+      transform: translateY(0);
+    }
+    
+    .btn-zb::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255,255,255,0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    .btn-zb:focus:not(:active)::after {
+      animation: ripple 0.6s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+    
+    .btn-rojo {
+      background-color: var(--rojo-zb);
+      color: white;
+    }
+    
+    .btn-dorado {
+      background-color: var(--dorado-zb);
+      color: var(--negro-zb);
+    }
+    
+    .btn-negro {
+      background-color: var(--negro-zb);
+      color: white;
+    }
+    
+    /* Tarjetas y contenedores */
+    .card-zb {
+      border: none;
+      border-radius: 12px;
+      box-shadow: var(--sombra);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .card-zb:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    /* Tablas mejoradas */
+    .table-zb {
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--sombra);
+    }
+    
+    .table-zb thead th {
+      background: linear-gradient(135deg, var(--negro-zb), #333);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-size: 1rem;
+      padding: 18px;
+      border: none;
+    }
+    
+    .table-zb tbody tr {
+      font-size: 1.05rem;
+      transition: all 0.2s ease;
+    }
+    
+    .table-zb tbody tr:hover {
+  background-color: rgba(255, 68, 84, 0.08); /* Resaltado más notorio */
+  transform: scale(1.003)
+    }
+    
+    .table-zb td, .table-zb th {
+      vertical-align: middle;
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    /* Efectos de entrada */
+    .animate-entrada {
+      animation: fadeIn 0.7s ease-out;
+    }
+    @keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Modo oscuro */
+    body.dark-mode {
+      background-color: #121212;
+      color: #f1f1f1;
+    }
+    
+    body.dark-mode .card-zb {
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+    }
+    
+    body.dark-mode .table-zb tbody tr {
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+    }
+    
+    body.dark-mode .table-zb tbody tr:hover {
+      background-color: rgba(212, 175, 55, 0.2);
+    }
+    
+    body.dark-mode .table-zb td {
+      border-bottom: 1px solid #333;
+    }
+    
+    /* Checkboxes personalizados */
+    .form-check-input:checked {
+      background-color: var(--rojo-zb);
+      border-color: var(--rojo-zb);
+    }
+    
+    /* Inputs y selects */
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+      font-size: 1.05rem;
+      box-shadow: 0 0 5px rgba(255, 68, 84, 0.1); /* Ligero brillo en reposo */
+      background-color: #fff;
+    }
+    
+.form-control:focus, .form-select:focus {
+  border-color: var(--rojo-zb);
+  box-shadow: 0 0 10px rgba(255, 68, 84, 0.6); /* Brillo rojito */
+}
+    
+    /* Badges */
+    .badge-zb {
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    .card-zb, .table-zb {
+  border-radius: 16px;
+}
+
+input.form-control, select.form-select {
+  border-radius: 10px;
+}
+.card-zb.bg-white {
+  border: 2px solid rgba(255, 68, 84, 0.1);
+  box-shadow: 0 0 15px rgba(255, 68, 84, 0.1);
+}
+
+  </style>
 </head>
 
-<body class="bg-light">
-
-  <!-- 🔝 Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body>
+  <!-- 🔝 Navbar Premium -->
+  <nav class="navbar navbar-expand-lg navbar-zb sticky-top">
     <div class="container">
-      <a class="navbar-brand" href="/">Zona Biker</a>
+      <a class="navbar-brand navbar-brand-zb animate__animated animate__fadeInLeft" href="/">
+        <span style="color: var(--dorado-zb)">🏍️</span> ZONA BIKER
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="/">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="/registros-hoy">Registros de Hoy</a></li>
-          <li class="nav-item"><a class="nav-link" href="/registros-todos">Todos los Registros</a></li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/">🏠 Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/registros-hoy">📅 Hoy</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active text-white fw-bold" href="/registros-todos">📋 Todos</a>
+          </li>
         </ul>
+        <button id="toggle-dark" class="btn btn-sm btn-dorado ms-3 animate__animated animate__fadeIn">
+          🌙 Modo Oscuro
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- 🧾 Contenido -->
-  <div class="container my-5">
-    <h2 class="text-center mb-4">📋 Todos los Registros</h2>
-
-<div class="text-center mb-4">
-  <button class="btn btn-secondary me-2" id="toggle-dark">🌙 Modo Oscuro</button>
-  <button class="btn btn-danger" id="btn-pdf">📄 Descargar PDF</button>
-  <a class="btn btn-success ms-2" id="btn-wsp" target="_blank">📤 Compartir por WhatsApp</a>
-</div>
-
-
-    <div id="contenedor-registros" class="row gy-4"></div>
+  <!-- 🧾 Contenido Principal -->
+  <div class="container my-5 animate-entrada">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-25">
+        <h2 class="text-center mb-4 fw-bold text-uppercase" style="color: var(--rojo-zb)">
+          📋 Registro Completo de Servicios
+        </h2>
+        
+        <!-- Barra de Acciones -->
+        <div class="card-zb bg-white mb-4 p-3">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+              <label class="form-label fw-bold">📆 Desde:</label>
+              <input type="date" id="filtro-desde" class="form-control shadow-sm">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-bold">📆 Hasta:</label>
+              <input type="date" id="filtro-hasta" class="form-control shadow-sm">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <button onclick="filtrarPorFechas()" 
+                class="btn btn-negro w-100 btn-zb animate__animated animate__pulse animate__infinite animate__slower">
+                🔍 Filtrar
+              </button>
+            </div>
+          </div>
+          
+          <div class="row mt-3 g-3">
+            <div class="col-md-8">
+              <input type="text" id="buscador-registros" class="form-control shadow-sm" 
+                placeholder="🔎 Buscar por cliente, empleado, moto, placa o fecha...">
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex align-items-center h-100">
+                <div class="form-check form-switch me-3">
+                  <input class="form-check-input" type="checkbox" id="check-todos" style="width: 3em; height: 1.5em;">
+                  <label class="form-check-label fw-bold" for="check-todos">Seleccionar todos</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Botones de Acción -->
+        <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+          <button id="btn-pdf" class="btn btn-negro btn-zb px-4">
+            📄 Generar PDF
+          </button>
+          <a id="btn-wsp" target="_blank" class="btn btn-dorado btn-zb px-4">
+            📤 Compartir por WhatsApp
+          </a>
+          <button id="btn-eliminar" class="btn btn-rojo btn-zb px-4">
+            🗑️ Eliminar seleccionados
+          </button>
+        </div>
+        
+        <!-- Contenedor de Registros -->
+        <div id="contenedor-registros" class="card-zb bg-white p-0 overflow-hidden"></div>
+      </div>
+    </div>
   </div>
 
+  <!-- Contenedor para Detalles -->
+  <div id="detalle-empleado" class="container mb-5"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
   <script src="js/html2pdf.bundle.min.js"></script>
   <script src="js/registros-todos.js"></script>
+  
   <script>
-  document.getElementById('toggle-dark').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-  });
-</script>
-
+    // Toggle modo oscuro
+    document.getElementById('toggle-dark').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const btn = document.getElementById('toggle-dark');
+      if (document.body.classList.contains('dark-mode')) {
+        btn.innerHTML = '☀️ Modo Claro';
+        btn.classList.remove('btn-dorado');
+        btn.classList.add('btn-negro');
+      } else {
+        btn.innerHTML = '🌙 Modo Oscuro';
+        btn.classList.remove('btn-negro');
+        btn.classList.add('btn-dorado');
+      }
+    });
+    
+    // Efecto de ripple para botones
+    document.querySelectorAll('.btn-zb').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        let x = e.clientX - e.target.getBoundingClientRect().left;
+        let y = e.clientY - e.target.getBoundingClientRect().top;
+        
+        let ripples = document.createElement('span');
+        ripples.style.left = x + 'px';
+        ripples.style.top = y + 'px';
+        this.appendChild(ripples);
+        
+        setTimeout(() => {
+          ripples.remove();
+        }, 1000);
+      });
+    });
+    
+    // Función de filtrado
+    function filtrarPorFechas() {
+      const desde = document.getElementById('filtro-desde').value;
+      const hasta = document.getElementById('filtro-hasta').value;
+      cargarRegistrosTodos(desde, hasta);
+    }
+  </script>
 </body>
 </html>

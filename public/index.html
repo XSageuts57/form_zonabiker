@@ -9,6 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css"/>
+  <!-- Favicon en formato PNG -->
+<link rel="icon" href="logobikr.ico" type="image/x-icon">
+
+
+
+
+
   <script defer src="script.js"></script>
   <style>
     :root {
@@ -454,6 +461,21 @@ select[name="empleado"] option[value="Kike"] {
   color: #ff4454;
   font-weight: bold;
   text-shadow: 0 0 8px #ff4454;
+}
+@media (max-width: 576px) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  body::after, body::before {
+    display: none !important;
+  }
+}
+@media (max-width: 576px) {
+  .glassmorph, .stat-card, form {
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
 }
 
 
