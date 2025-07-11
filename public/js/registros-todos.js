@@ -233,22 +233,63 @@ document.querySelectorAll('.fila-resumen').forEach(fila => {
 
     let tarjetas = `<h6 class="mt-4">🛵 Motos atendidas por <b>${empleado}</b> el <b>${fecha}</b>:</h6>`;
 
-    detalles.forEach(r => {
-      tarjetas += `
-        <div class="card mb-2 shadow-sm">
-          <div class="card-body">
-            <h6 class="card-title">${r.marca} ${r.modelo} (${r.placa || 'Sin placa'})</h6>
-            <p class="card-text">
-              ⏰ ${r.hora}<br>
-              👤 Cliente: ${r.cliente}<br>
-              🛠 Servicios: ${r.servicios || 'Ninguno'}<br>
-              💰 Costo: S/${parseFloat(r.costo).toFixed(2)}<br>
-              💳 Pago: ${r.metodo_pago ?? 'N/A'}
-            </p>
-          </div>
+detalles.forEach(r => {
+  const costo            = parseFloat(r.costo)            || 0;
+  const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
+  const manoObra         = costo - gananciaRepuesto;
+  const isKike           = (r.empleado || '').toLowerCase() === 'kike';
+  const comision         = isKike ? 0 : manoObra * 0.5;
+
+  tarjetas += `
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header fw-semibold">
+      🛵 ${r.marca} ${r.modelo} <span class="text-muted">(${r.placa || 'Sin placa'})</span>
+    </div>
+
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <i class="bi bi-calendar3"></i> <strong>Fecha:</strong> ${fecha}
+        &nbsp; | &nbsp;
+        <i class="bi bi-clock"></i> <strong>Hora:</strong> ${r.hora}
+      </li>
+
+      <li class="list-group-item">
+        <strong>Cliente:</strong> ${r.cliente}<br>
+        <strong>Empleado:</strong> ${r.empleado}
+      </li>
+
+      <!-- SERVICIOS -->
+      ${r.servicios
+        ? `<li class="list-group-item bg-light">
+             <strong class="text-primary">🛠 Servicios realizados</strong><br>
+             <div class="ps-3">${r.servicios.replaceAll(',', '<br>')}</div>
+           </li>`
+        : ''}
+
+      <!-- REPUESTOS -->
+      ${r.repuesto
+        ? `<li class="list-group-item bg-light">
+             <strong class="text-warning">🔧 Repuesto(s)</strong><br>
+             <div class="ps-3">${r.repuesto.replaceAll(',', '<br>')}</div>
+           </li>`
+        : ''}
+
+      <li class="list-group-item">
+        <div class="row text-center">
+          <div class="col-6 col-md-3"><span class="fw-bold">Costo</span><br>S/${costo.toFixed(2)}</div>
+          <div class="col-6 col-md-3"><span class="fw-bold">Repuesto</span><br>S/${gananciaRepuesto.toFixed(2)}</div>
+          <div class="col-6 col-md-3"><span class="fw-bold">Mano&nbsp;Obra</span><br>S/${manoObra.toFixed(2)}</div>
+          <div class="col-6 col-md-3"><span class="fw-bold">Comisión</span><br>S/${comision.toFixed(2)}</div>
         </div>
-      `;
-    });
+      </li>
+
+      <li class="list-group-item">
+        <strong>Método de pago:</strong> ${r.metodo_pago ?? 'N/A'}
+      </li>
+    </ul>
+  </div>`;
+});
+
 
     document.getElementById('detalle-empleado').innerHTML = tarjetas;
     document.getElementById('detalle-empleado').scrollIntoView({ behavior: 'smooth' });
