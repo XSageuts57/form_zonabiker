@@ -11,11 +11,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hover.css/css/hover-min.css"/>
   <!-- Favicon en formato PNG -->
 <link rel="icon" href="logobikr.ico" type="image/x-icon">
-
-
-
-
-
   <script defer src="script.js"></script>
   <style>
     :root {
@@ -27,7 +22,10 @@
       --verde-neon: #00ffbb;
       --brillo: rgba(255, 255, 255, 0.06);
     }
-
+.dark-mode .texto-pagos {
+  color: #ffffff !important; /* blanco puro */
+  font-weight: 500;          /* opcional, para que se vea más nítido */
+}
     body {
       background: radial-gradient(circle at 20% 30%, #0a0a0a 0%, #111 100%);
       color: #fff;
@@ -533,9 +531,9 @@ select[name="empleado"] option[value="Kike"] {
           <input type="text" class="form-control" name="placa" placeholder="Ej: 1234-ABC" />
         </div>
 
-        <!-- COSTO -->
+        <!-- PAGO -->
         <div class="col-md-4">
-          <label class="form-label">Costo</label>
+          <label class="form-label">PAGO</label>
           <input type="number" class="form-control" name="costo" required />
         </div>
 
@@ -545,6 +543,14 @@ select[name="empleado"] option[value="Kike"] {
           <input type="text" class="form-control" name="cliente" required />
         </div>
 
+        <!-- TELÉFONO -->
+          <div class="col-md-6">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-control" name="telefono" placeholder="Ej: 987654321" required />
+          </div>
+
+        
+
         <!-- EMPLEADO -->
         <div class="col-md-6">
           <label class="form-label">Empleado</label>
@@ -552,20 +558,32 @@ select[name="empleado"] option[value="Kike"] {
             <option value="" disabled selected>Selecciona empleado</option>
             <option value="Kike">Kike</option>
             <option value="Jose">Jose</option>
+            <option value="Jose">Fabrizio</option>
           </select>
         </div>
 
-        <!-- METODO DE PAGO -->
-        <div class="col-md-6">
-          <label class="form-label">Método de Pago</label>
-          <select name="metodo_pago" class="form-select" required>
-            <option value="" disabled selected>Elige método de pago</option>
-            <option value="Yape">Yape</option>
-            <option value="Plin">Plin</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="Efectivo">Efectivo</option>
-          </select>
-        </div>
+<!-- MÉTODOS DE PAGO (BOTONES TOGGLE) -->
+<div class="col-md-6">
+  <label class="form-label d-block">Métodos de Pago</label>
+  <div class="d-flex flex-wrap gap-2">
+    <input type="checkbox" class="btn-check metodo-pago" id="pagoYape" value="Yape" autocomplete="off">
+    <label class="btn btn-outline-primary rounded-pill px-3" for="pagoYape">Yape</label>
+
+    <input type="checkbox" class="btn-check metodo-pago" id="pagoPlin" value="Plin" autocomplete="off">
+    <label class="btn btn-outline-success rounded-pill px-3" for="pagoPlin">Plin</label>
+
+    <input type="checkbox" class="btn-check metodo-pago" id="pagoTransferencia" value="Transferencia" autocomplete="off">
+    <label class="btn btn-outline-warning rounded-pill px-3" for="pagoTransferencia">Transferencia</label>
+
+    <input type="checkbox" class="btn-check metodo-pago" id="pagoEfectivo" value="Efectivo" autocomplete="off">
+    <label class="btn btn-outline-danger rounded-pill px-3" for="pagoEfectivo">Efectivo</label>
+  </div>
+  <small id="pago-hint" class="texto-pagos">Puedes elegir hasta 2 métodos de pago</small>
+</div>
+
+
+
+
 
         <!-- SERVICIOS -->
         <div class="col-md-12">
@@ -579,10 +597,16 @@ select[name="empleado"] option[value="Kike"] {
           <input type="text" class="form-control" name="repuesto" placeholder="Ej: Filtro de aceite, cadena 428..." />
         </div>
 
-        <!-- GANANCIA REPUESTO -->
+        <!-- COSTO REPUESTO -->
         <div class="col-md-6">
           <label class="form-label">Costo de Repuesto</label>
           <input type="text" step="0.01" class="form-control" name="ganancia_repuesto" placeholder="Ej: 10.00" />
+        </div>
+
+        <!-- COSTO MANO DE OBRA -->
+        <div class="col-md-6">
+          <label class="form-label">Costo de Mano de Obra</label>
+          <input type="number" step="0.01" class="form-control" name="costo_mano_obra" placeholder="Ej: 50.00" />
         </div>
 
         <!-- FECHA -->
@@ -722,6 +746,19 @@ select[name="empleado"] option[value="Kike"] {
   }
 
   themeBtn.addEventListener('click', toggleTheme);
+</script>
+<script>
+  const checkboxesPago = document.querySelectorAll(".metodo-pago");
+
+  checkboxesPago.forEach(chk => {
+    chk.addEventListener("change", function() {
+      let seleccionados = document.querySelectorAll(".metodo-pago:checked");
+      if (seleccionados.length > 2) {
+        alert("Solo puedes seleccionar hasta 2 métodos de pago.");
+        this.checked = false; // desmarca el último clic
+      }
+    });
+  });
 </script>
 
 </body>

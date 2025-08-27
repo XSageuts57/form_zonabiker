@@ -11,27 +11,36 @@ app.use(express.static('public'));
 
 // 🚀 Ruta para registrar nuevo ingreso
 app.post('/api/registro', async (req, res) => {
-const {
-  marca, modelo, cilindrada, kilometraje,
-  cliente, empleado, fecha, hora, costo, metodo_pago,
-  servicios, placa, repuesto, ganancia_repuesto
-} = req.body;
+  const {
+    marca, modelo, cilindrada, kilometraje, cliente, telefono,
+    empleado, fecha, hora, costo, costo_mano_obra,
+    metodo_pago, servicios, placa, repuesto, ganancia_repuesto
+  } = req.body;
 
 
-  const comision = empleado.toLowerCase() !== 'kike' ? costo * 0.5 : 0;
-  const gananciaKike = costo - comision;
+const costoMO = parseFloat(costo_mano_obra) || 0;   // fuerza número
+const costoTotal = parseFloat(costo) || 0;
+const gananciaRepuesto = parseFloat(ganancia_repuesto) || 0;
 
-const query = `
-  INSERT INTO registros 
-  (marca, modelo, cilindrada, kilometraje, cliente, empleado, fecha, hora, costo, comision, ganancia_kike, metodo_pago, servicios, placa, repuesto, ganancia_repuesto)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-`;
+const comision = empleado?.toLowerCase() !== 'kike' ? (costoMO * 0.5) : 0;
+const gananciaKike = costoMO - comision;
+
+const metodoPagoVal = metodo_pago && metodo_pago !== 'null' ? metodo_pago : null;
+
+
+  const query = `
+    INSERT INTO registros 
+    (marca, modelo, cilindrada, kilometraje, cliente, telefono, empleado, fecha, hora, 
+     costo, costo_mano_obra, comision, ganancia_kike, metodo_pago, servicios, placa, repuesto, ganancia_repuesto)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
 
   try {
     await db.query(query, [
-      marca, modelo, cilindrada, kilometraje,
-      cliente, empleado, fecha, hora, costo,
-      comision, gananciaKike, metodo_pago, servicios, placa, repuesto, ganancia_repuesto || 0
+      marca, modelo, cilindrada, kilometraje, cliente, telefono, empleado,
+      fecha, hora, costo, costo_mano_obra,
+      comision, gananciaKike, metodo_pago, servicios, placa, repuesto,
+      ganancia_repuesto || 0
     ]);
     res.send('✅ Registro guardado correctamente');
   } catch (err) {
@@ -103,30 +112,42 @@ app.delete('/api/registro/:id', async (req, res) => {
 // ✏️ Editar TODOS los campos del registro
 app.put('/api/registro/:id', async (req, res) => {
   const { id } = req.params;
-const {
-  servicios, marca, modelo, cilindrada, kilometraje,
-  cliente, empleado, fecha, hora,
-  costo, metodo_pago, placa, repuesto, ganancia_repuesto
-} = req.body;
+  const {
+    servicios, marca, modelo, cilindrada, kilometraje,
+    cliente, telefono, empleado, fecha, hora,
+    costo, costo_mano_obra, metodo_pago,
+    placa, repuesto, ganancia_repuesto
+  } = req.body;
 
-  const comision = empleado.toLowerCase() !== 'kike' ? costo * 0.5 : 0;
-  const gananciaKike = costo - comision;
+  // 🔒 Sanitizar valores numéricos
+  const costoTotal = parseFloat(costo) || 0;
+  const costoMO = parseFloat(costo_mano_obra) || 0;
+  const gananciaRepuesto = parseFloat(ganancia_repuesto) || 0;
 
-const query = `
-  UPDATE registros SET
-    servicios = ?, marca = ?, modelo = ?, cilindrada = ?, kilometraje = ?,
-    cliente = ?, empleado = ?, fecha = ?, hora = ?,
-    costo = ?, metodo_pago = ?, comision = ?, ganancia_kike = ?, placa = ?, repuesto = ?, ganancia_repuesto = ?
-  WHERE id = ?
-`;
+  // 🔒 Calcular comisiones
+  const comision = empleado?.toLowerCase() !== 'kike' ? (costoMO * 0.5) : 0;
+  const gananciaKike = costoMO - comision;
+
+  // 🔒 Asegurar metodo_pago correcto (NULL si no hay)
+  const metodoPagoVal = metodo_pago && metodo_pago !== 'null' ? metodo_pago : null;
+
+  const query = `
+    UPDATE registros SET
+      servicios = ?, marca = ?, modelo = ?, cilindrada = ?, kilometraje = ?,
+      cliente = ?, telefono = ?, empleado = ?, fecha = ?, hora = ?,
+      costo = ?, costo_mano_obra = ?, metodo_pago = ?, comision = ?, ganancia_kike = ?,
+      placa = ?, repuesto = ?, ganancia_repuesto = ?
+    WHERE id = ?
+  `;
 
   try {
     const [result] = await db.query(query, [
-  servicios, marca, modelo, cilindrada, kilometraje,
-  cliente, empleado, fecha, hora,
-  costo, metodo_pago, comision, gananciaKike, placa, repuesto, ganancia_repuesto,
-  id
-]);
+      servicios, marca, modelo, cilindrada, kilometraje,
+      cliente, telefono, empleado, fecha, hora,
+      costoTotal, costoMO, metodoPagoVal, comision, gananciaKike,
+      placa, repuesto, gananciaRepuesto,
+      id
+    ]);
     if (result.affectedRows === 0) return res.status(404).send('Registro no encontrado');
     res.send('✅ Registro actualizado');
   } catch (err) {

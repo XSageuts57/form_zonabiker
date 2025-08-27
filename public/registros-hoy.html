@@ -1,6 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
 <style>
+  /* Estilos para los botones de métodos de pago */
+.metodo-pago {
+    display: none;
+}
+
+.btn-check:checked + .btn {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
+    font-weight: bold;
+}
+
+.texto-pagos {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* Limitar a 2 selecciones máximo */
+.metodo-pago:checked ~ .metodo-pago:not(:checked) + .btn {
+    opacity: 0.5;
+    pointer-events: none;
+}
   /* Impresión */
   @media print {
     nav, #btn-pdf, #btn-wsp {
@@ -172,6 +193,130 @@
 <div id="detalles-empleado" class="mt-4" style="display: none;"></div>
 
   </div>
+
+  <!-- 🔽 Modal para editar registro -->
+<!-- 🔽 Modal para editar registro -->
+<div class="modal fade" id="modalEditar" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">✏️ Editar Registro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEditar">
+          <input type="hidden" id="edit-id">
+
+          <!-- 📅 Fecha y Hora -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Fecha</label>
+              <input type="date" id="edit-fecha" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Hora</label>
+              <input type="time" id="edit-hora" class="form-control">
+            </div>
+          </div>
+
+          <!-- 👤 Cliente y Teléfono -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Cliente</label>
+              <input type="text" id="edit-cliente" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Teléfono</label>
+              <input type="text" id="edit-telefono" class="form-control">
+            </div>
+          </div>
+
+          <!-- 🏍️ Moto -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Marca</label>
+              <input type="text" id="edit-marca" class="form-control">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Modelo</label>
+              <input type="text" id="edit-modelo" class="form-control">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Cilindrada</label>
+              <input type="text" id="edit-cilindrada" class="form-control">
+            </div>
+          </div>
+
+          <!-- 🔢 Kilometraje y Placa -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Kilometraje</label>
+              <input type="number" id="edit-kilometraje" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Placa</label>
+              <input type="text" id="edit-placa" class="form-control">
+            </div>
+          </div>
+
+          <!-- 👨‍🔧 Empleado -->
+          <div class="mb-3">
+            <label class="form-label">Empleado</label>
+            <input type="text" id="edit-empleado" class="form-control">
+          </div>
+
+          <!-- 🔧 Servicios -->
+          <div class="mb-3">
+            <label class="form-label">Servicios</label>
+            <textarea id="edit-servicios" class="form-control" rows="2"></textarea>
+          </div>
+
+          <!-- 💰 Métodos de pago y montos -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Método de Pago</label>
+              <input type="text" id="edit-metodo-pago" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Pago (Costo Total)</label>
+              <input type="number" id="edit-costo" class="form-control">
+            </div>
+          </div>
+
+          <!-- 🛠 Mano de obra y Comisión -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Costo Mano de Obra</label>
+              <input type="number" id="edit-costo-mano-obra" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Comisión</label>
+              <input type="number" id="edit-comision" class="form-control" readonly>
+            </div>
+          </div>
+
+          <!-- 🛒 Repuesto -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Repuesto</label>
+              <input type="text" id="edit-repuesto" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Costo Repuesto</label>
+              <input type="number" id="edit-ganancia-repuesto" class="form-control">
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarEdicion()">💾 Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/html2pdf.bundle.min.js"></script>
@@ -403,6 +548,100 @@ contenedor.insertAdjacentElement("afterbegin", tituloTabla); // ✅ más seguro
 
 
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('form-registro');
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // 1. OBTENER MÉTODOS DE PAGO SELECCIONADOS
+        const selectedPayments = Array.from(document.querySelectorAll('.metodo-pago:checked'))
+                                    .map(checkbox => checkbox.value);
+        
+        // Validar que no se seleccionen más de 2 métodos
+        if (selectedPayments.length > 2) {
+            alert('❌ Máximo 2 métodos de pago permitidos');
+            return;
+        }
+        
+        const formData = new FormData(form);
+        
+        // 2. PREPARAR DATOS PARA ENVIAR
+        const data = {
+            marca: formData.get('marca'),
+            modelo: formData.get('modelo'),
+            cilindrada: formData.get('cilindrada'),
+            kilometraje: formData.get('kilometraje'),
+            cliente: formData.get('cliente'),
+            telefono: formData.get('telefono'),
+            empleado: formData.get('empleado'),
+            fecha: formData.get('fecha'),
+            hora: formData.get('hora'),
+            costo: parseFloat(formData.get('costo')) || 0,
+            costo_mano_obra: parseFloat(formData.get('costo_mano_obra')) || 0, // Valor ingresado
+            metodo_pago: selectedPayments.join(', '), // Métodos como string
+            servicios: formData.get('servicios'),
+            placa: formData.get('placa'),
+            repuesto: formData.get('repuesto'),
+            ganancia_repuesto: parseFloat(formData.get('ganancia_repuesto')) || 0
+        };
+        
+        console.log('Datos a enviar:', data); // Para debug
 
+        // 3. ENVIAR AL SERVIDOR
+        try {
+            const response = await fetch('/api/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                alert('✅ Registro guardado correctamente');
+                form.reset();
+            } else {
+                alert('❌ Error al guardar registro');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error de conexión');
+        }
+    });
+
+    // ... el resto de tu código (autocompletados, etc.) ...
+});
+</script>
+<script>
+// Limitar selección a máximo 2 métodos de pago
+document.querySelectorAll('.metodo-pago').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const checked = document.querySelectorAll('.metodo-pago:checked');
+        
+        if (checked.length > 2) {
+            this.checked = false;
+            alert('❌ Máximo 2 métodos de pago permitidos');
+            return;
+        }
+        
+        // Habilitar/deshabilitar checkboxes según la selección
+        document.querySelectorAll('.metodo-pago').forEach(cb => {
+            if (checked.length >= 2 && !cb.checked) {
+                cb.disabled = true;
+                cb.nextElementSibling.style.opacity = '0.5';
+            } else {
+                cb.disabled = false;
+                cb.nextElementSibling.style.opacity = '1';
+            }
+        });
+    });
+});
+
+// Inicializar fecha y hora actual
+document.getElementById('fecha').valueAsDate = new Date();
+document.getElementById('hora').value = new Date().toTimeString().substring(0, 5);
+</script>
 </body>
 </html>

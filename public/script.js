@@ -185,8 +185,17 @@ modeloInput.addEventListener('input', () => {
 // =========================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const data = Object.fromEntries(new FormData(form).entries());
+
+  // 📌 juntar métodos de pago seleccionados
+  const pagosSeleccionados = Array.from(document.querySelectorAll('.metodo-pago:checked'))
+    .map(chk => chk.value);
+
+  data.metodo_pago = pagosSeleccionados.join(', '); // ejemplo: "Yape, Efectivo"
+
   data.costo = parseFloat(data.costo);
+  data.costo_mano_obra = parseFloat(data.costo_mano_obra) || 0;
   data.ganancia_repuesto = parseFloat(data.ganancia_repuesto) || 0; 
   data.servicios = form.servicios.value.trim();
   data.repuesto = form.repuesto.value.trim();
@@ -263,6 +272,8 @@ Placa:  ${r.placa}`;
               📦 Ganancia Repuestos: S/${r.ganancia_repuesto || '0.00'}<br>
               🛠 Servicios: ${r.servicios}<br>
               📛 Placa: ${r.placa}<br>
+              📞 Teléfono: ${r.telefono || '-'}<br>
+              💵 Costo Mano de Obra: S/${r.costo_mano_obra || '0.00'}<br>
             </p>
             <a class="btn btn-success" href="https://wa.me/?text=${encodeURIComponent(resumen)}" target="_blank">📤 WhatsApp</a>
           </div>
