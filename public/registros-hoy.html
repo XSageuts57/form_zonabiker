@@ -178,12 +178,19 @@
     <div class="col-md-3">
       <label>Hasta:</label>
       <input type="date" id="fechaFin" class="form-control">
+      
     </div>
     <div class="col-md-2 d-flex align-items-end">
       <button class="btn btn-primary w-100 me-2" onclick="filtrarPorFechas()">🔎 Filtrar</button>
       <button class="btn btn-secondary w-100" onclick="cargarRegistrosHoy()">🔁 Mostrar Hoy</button>
+      
     </div>
   </div>
+</div>
+<!-- 📌 Roles y jerarquías -->
+<div class="card shadow-sm p-3 mb-4" style="max-width: 400px; font-size: 14px;">
+  <h6 class="fw-bold mb-2">📋 Roles y Jerarquías</h6>
+  <ul id="lista-roles" class="list-unstyled mb-0"></ul>
 </div>
 
 </div>
@@ -191,7 +198,7 @@
     <div id="contenedor-registros" class="row gy-4"></div>
 <!-- 🔽 Agrega esto después de contenedor-registros -->
 <div id="detalles-empleado" class="mt-4" style="display: none;"></div>
-
+  
   </div>
 
   <!-- 🔽 Modal para editar registro -->
@@ -325,6 +332,17 @@
   document.getElementById('toggle-dark').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
   });
+function calcularComision(rol, manoObra) {
+  const porcentajes = {
+    "Jefe": 1.0,
+    "Tecnico": 0.7,
+    "Auxiliar": 0.5,
+    "Ayudante": 0.3,
+    "Practicante": 0.2
+  };
+  const porcentaje = porcentajes[rol] || 0;
+  return manoObra * porcentaje;
+}
 
 function mostrarDetallesEmpleado(nombre, fecha) {
   fetch('/api/registros')
@@ -347,10 +365,10 @@ function mostrarDetallesEmpleado(nombre, fecha) {
             <ul class="list-group list-group-flush">`;
 
       filtrados.forEach(r => {
-        const costo = parseFloat(r.costo) || 0;
-        const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
-        const manoObra = costo - gananciaRepuesto;
-        const comision = (r.empleado.toLowerCase() === 'kike') ? 0 : manoObra * 0.5;
+      const costo = parseFloat(r.costo) || 0;
+      const manoObra = parseFloat(r.costo_mano_obra) || 0;
+      const comision = calcularComision(r.rol, manoObra);
+
 
         html += `
           <li class="list-group-item">
@@ -426,64 +444,90 @@ function renderizarRegistros(registros, fechaTexto) {
         background-color: white;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
       ">
-        <thead style="background-color: #212529; color: white;">
-          <tr>
-            <th>Fecha</th><th>Hora</th><th>Cliente</th><th>Moto</th><th>Empleado</th>
-            <th>Placa</th><th>Servicios</th><th>Pago</th><th>Costo</th><th>Ganancia Repuesto</th>
-            <th>Mano Obra</th><th>Comisión</th><th>Utilidad (ZonaBiker)</th><th>Repuesto</th><th>Acciones</th>
-          </tr>
-        </thead>
+<thead style="background-color: #212529; color: white;">
+  <tr>
+    <th>Fecha</th>
+    <th>Hora</th>
+    <th>Cliente</th>
+    <th>Teléfono</th>
+    <th>Moto</th>
+    <th>Cilindrada</th>
+    <th>Kilometraje</th>
+    <th>Empleado</th>
+    <th>Rol</th>
+    <th>Placa</th>
+    <th>Servicios</th>
+    <th>Método Pago</th>
+    <th>Pago</th>
+    <th>Costo Repuesto</th>
+    <th>Mano Obra</th>
+    <th>Comisión</th>
+    <th>Repuesto</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
+
         <tbody>`;
 
   const empleados = {};
   let totalGananciaKike = 0;
   let totalGananciaRepuesto = 0;
 
-  registros.forEach(r => {
-    const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-PE');
-    const empleado = r.empleado || 'Sin nombre';
-    const costo = parseFloat(r.costo) || 0;
-    const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
-    const manoObra = costo - gananciaRepuesto;
-    const mitadManoObra = manoObra * 0.5;
+registros.forEach(r => {
+  const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-PE');
+  const empleado = r.empleado || 'Sin nombre';
+  const costo = parseFloat(r.costo) || 0;
+  const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
+  const manoObra = parseFloat(r.costo_mano_obra) || 0;
 
-    let comisionEmpleado = 0;
-    let gananciaKike = 0;
-    if (empleado.toLowerCase() === 'kike') {
-      gananciaKike = manoObra;
-    } else {
-      comisionEmpleado = mitadManoObra;
-      gananciaKike = mitadManoObra;
-    }
+  // ✅ Ahora comisionEmpleado es un número
+  const comisionEmpleado = calcularComision(r.rol, manoObra);
 
-    totalGananciaKike += gananciaKike;
-    totalGananciaRepuesto += gananciaRepuesto;
+  // Ganancia de Kike = lo que NO se lleva el empleado
+  const gananciaKike = manoObra - comisionEmpleado;
 
-    if (!empleados[empleado]) {
-      empleados[empleado] = { cantidad: 0, comision: 0, costos: [], manoObraTotal: 0, utilidad: 0 };
-    }
+  totalGananciaKike += gananciaKike;
+  totalGananciaRepuesto += gananciaRepuesto;
 
-    empleados[empleado].cantidad++;
-    empleados[empleado].costos.push(costo);
-    empleados[empleado].manoObraTotal += manoObra;
-    empleados[empleado].comision += comisionEmpleado;
-    empleados[empleado].utilidad += gananciaKike;
+  if (!empleados[empleado]) {
+    empleados[empleado] = { cantidad: 0, comision: 0, costos: [], manoObraTotal: 0, utilidad: 0 };
+  }
 
-    resumenTexto += `🛵 *${r.marca} ${r.modelo}*\n📅 ${fechaFormateada} ⏰ ${r.hora}\n👤 Cliente: ${r.cliente}\n🔢 Placa: ${r.placa || 'No registrada'}\n👨‍🔧 Empleado: ${r.empleado}\n🛠 Servicios: ${r.servicios || 'Ninguno'}\n🔧 Repuestos: ${r.repuesto || 'Ninguno'}\n💳 Pago: ${r.metodo_pago ?? 'N/A'}\n💰 Costo: S/${costo.toFixed(2)}\n🧾 Comisión: S/${parseFloat(r.comision || comisionEmpleado).toFixed(2)}\n👑 Ganancia Kike: S/${gananciaKike.toFixed(2)}\n📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}\n🛠 Mano Obra: S/${manoObra.toFixed(2)}\n────────────────────\n`;
+  empleados[empleado].cantidad++;
+  empleados[empleado].costos.push(costo);
+  empleados[empleado].manoObraTotal += manoObra;
+  empleados[empleado].comision += comisionEmpleado;
+  empleados[empleado].utilidad += gananciaKike;
 
-    tabla += `
-      <tr>
-        <td>${fechaFormateada}</td><td>${r.hora}</td><td>${r.cliente}</td>
-        <td>${r.marca} ${r.modelo}</td><td>${r.empleado}</td><td>${r.placa || '-'}</td>
-        <td>${r.servicios || '-'}</td><td>${r.metodo_pago ?? 'N/A'}</td>
-        <td>S/${costo.toFixed(2)}</td><td>S/${gananciaRepuesto.toFixed(2)}</td>
-        <td>S/${manoObra.toFixed(2)}</td><td>S/${comisionEmpleado.toFixed(2)}</td>
-        <td>S/${gananciaKike.toFixed(2)}</td><td>${r.repuesto || '-'}</td>
-        <td>
-          <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
-          <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
-        </td>
-      </tr>`;
+  resumenTexto += `🛵 *${r.marca} ${r.modelo}*\n📅 ${fechaFormateada} ⏰ ${r.hora}\n👤 Cliente: ${r.cliente}\n🔢 Placa: ${r.placa || 'No registrada'}\n👨‍🔧 Empleado: ${r.empleado}\n🛠 Servicios: ${r.servicios || 'Ninguno'}\n🔧 Repuestos: ${r.repuesto || 'Ninguno'}\n💳 Pago: ${r.metodo_pago ?? 'N/A'}\n💰 Costo: S/${costo.toFixed(2)}\n🧾 Comisión: S/${comisionEmpleado.toFixed(2)}\n👑 Ganancia Kike: S/${gananciaKike.toFixed(2)}\n📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}\n🛠 Mano Obra: S/${manoObra.toFixed(2)}\n────────────────────\n`;
+
+tabla += `
+  <tr>
+    <td>${fechaFormateada}</td>
+    <td>${r.hora}</td>
+    <td>${r.cliente}</td>
+    <td>${r.telefono || '-'}</td>
+    <td>${r.marca} ${r.modelo}</td>
+    <td>${r.cilindrada || '-'}</td>
+    <td>${r.kilometraje || '-'}</td>
+    <td>${r.empleado}</td>
+    <td>${r.rol || '-'}</td>
+    <td>${r.placa || '-'}</td>
+    <td>${r.servicios || '-'}</td>
+    <td>${r.metodo_pago ?? 'N/A'}</td>
+    <td>S/${costo.toFixed(2)}</td>
+    <td>S/${gananciaRepuesto.toFixed(2)}</td>
+    <td>S/${manoObra.toFixed(2)}</td>
+    <td>S/${comisionEmpleado.toFixed(2)}</td>
+    <td>${r.repuesto || '-'}</td>
+    <td>
+      <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
+      <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
+    </td>
+  </tr>`;
+
+
+
   });
 
   tabla += '</tbody></table>';
@@ -492,7 +536,14 @@ function renderizarRegistros(registros, fechaTexto) {
     <h5 class="mt-4 mb-2">📊 Resumen por trabajador (PDF)</h5>
     <table class="table table-bordered">
       <thead class="table-dark">
-        <tr><th>Empleado</th><th>Motos Atendidas</th><th>Costos</th><th>Total Bruto</th><th>Comisión</th><th>Mano de Obra</th><th>Utilidad</th></tr>
+        <tr><th>Empleado</th>
+          <th>Motos Atendidas</th>
+          <th>Costos</th>
+          <th>Total Bruto</th>
+          <th>Comisión</th>
+          <th>Mano de Obra</th>
+          <th>Utilidad</th>
+          </tr>
       </thead><tbody>`;
 
   Object.entries(empleados).forEach(([nombre, data]) => {
@@ -550,6 +601,7 @@ contenedor.insertAdjacentElement("afterbegin", tituloTabla); // ✅ más seguro
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  cargarRegistrosHoy();
     const form = document.getElementById('form-registro');
     
     form.addEventListener('submit', async function(e) {

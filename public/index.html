@@ -558,9 +558,26 @@ select[name="empleado"] option[value="Kike"] {
             <option value="" disabled selected>Selecciona empleado</option>
             <option value="Kike">Kike</option>
             <option value="Jose">Jose</option>
-            <option value="Jose">Fabrizio</option>
+            <option value="Fabrizio">Fabrizio</option>
           </select>
         </div>
+
+<!-- ROL (dentro del form) -->
+<div class="col-md-6">
+  <label class="form-label">Rol</label>
+  <select name="rol" id="selectRol" class="form-select" required>
+    <option value="" disabled selected>Selecciona rol</option>
+    <option value="Jefe" style="color:red; font-weight:bold;">Jefe</option>
+    <option value="Tecnico" style="color:rgb(35,85,224); font-weight:bold;">Técnico</option>
+    <option value="Auxiliar" style="color:green; font-weight:bold;">Auxiliar</option>
+    <option value="Ayudante" style="color:purple; font-weight:bold;">Ayudante</option>
+    <option value="Practicante" style="color:orange; font-weight:bold;">Practicante</option>
+  </select>
+</div>
+
+
+
+
 
 <!-- MÉTODOS DE PAGO (BOTONES TOGGLE) -->
 <div class="col-md-6">
@@ -671,6 +688,12 @@ select[name="empleado"] option[value="Kike"] {
   </div>
 
   <script>
+    document.getElementById("selectRol").addEventListener("change", function () {
+  const selected = this.options[this.selectedIndex];
+  this.style.color = selected.style.color;  // aplica el color del option elegido
+  this.style.fontWeight = "bold";
+});
+
   async function cargarResumenDiario() {
     try {
       const res = await fetch('/api/registros/hoy');
