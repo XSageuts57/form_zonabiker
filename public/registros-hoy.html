@@ -1,337 +1,2097 @@
 <!DOCTYPE html>
 <html lang="es">
-<style>
-  /* Estilos para los botones de métodos de pago */
-.metodo-pago {
-    display: none;
+<head>
+  <meta charset="UTF-8">
+  <title>📅 Registros de Hoy - Zona Biker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rojo-zb: #ff4454;
+      --dorado-zb: #d4af37;
+      --negro-zb: #000;
+      --gris-oscuro: #1a1a1a;
+      --gris-claro: #f8f9fa;
+      --sombra: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --sombra-hover: 0 15px 35px rgba(0, 0, 0, 0.2);
+      --transicion: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --footer-zb: #7f222a;
+      --navbar-z-index: 1040;
+      --footer-accent: #000000;
+      --footer-height: 52px;
+      --footer-gap: 40px;
+    }
+
+    html, body {
+      height: 100%;
+    }
+  .navbar-zb.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--navbar-z-index);
+    /* opcional: suavizar borde inferior */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+.site-footer {
+  background: #0b0b0b !important;
+  background-image: none !important;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.18);
+  position: relative;
+  z-index: 1200;
+  transform: translateZ(0); /* Force hardware acceleration */
 }
 
-.btn-check:checked + .btn {
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
-    font-weight: bold;
-}
+    .site-footer .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 
-.texto-pagos {
-    font-size: 0.875rem;
-    color: #6c757d;
-    margin-top: 5px;
-}
+  
+  .site-footer .footer-left,
+  .site-footer .footer-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: rgba(255,255,255,0.95);
+  }
+    .site-footer .footer-left strong {
+    color: var(--dorado-zb);
+  }
 
-/* Limitar a 2 selecciones máximo */
-.metodo-pago:checked ~ .metodo-pago:not(:checked) + .btn {
-    opacity: 0.5;
-    pointer-events: none;
-}
-  /* Impresión */
-  @media print {
-    nav, #btn-pdf, #btn-wsp {
-      display: none !important;
+  .site-footer .footer-meta {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+  }
+
+  /* separador discreto para móviles */
+  .site-footer .footer-sep {
+    color: rgba(255,255,255,0.35);
+    margin: 0 8px;
+  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      background-color: white !important;
-      color: black;
-      font-size: 12pt;
+      font-family: 'Montserrat', 'Segoe UI', sans-serif;
+      background-color: var(--gris-claro);
+      color: #333;
+      transition: var(--transicion);
+      line-height: 1.6;
+      overflow-x: hidden;
+      overflow-anchor: none;
+      padding-top: 70px;
+      padding-bottom: calc(var(--footer-height) + var(--footer-gap) + 12px);
     }
 
-    .card {
-      border: 1px solid #ccc;
-      margin-bottom: 15px;
-      box-shadow: none !important;
-    }
-
-    .card-body {
-      padding: 10px;
-    }
-
-    .card-title {
-      font-weight: bold;
-      font-size: 14pt;
-    }
-
-    .card-text {
-      font-size: 12pt;
-    }
-
-    h2 {
+      @media (max-width: 576px) {
+    .site-footer .footer-inner {
+      flex-direction: column;
+      gap: 8px;
       text-align: center;
-      margin-bottom: 20px;
-      font-size: 16pt;
     }
+    .site-footer .footer-meta { font-size: 12px; }
   }
-
-  /* Diseño general tabla */
-  #tabla-pdf {
-    font-family: 'Segoe UI', sans-serif;
-    margin-top: 15px;
-    overflow-x: auto;
+  @media (max-width: 575px) {
+    .site-footer { font-size: 13px; }
   }
+    body.dark-mode {
+      background-color: var(--gris-oscuro);
+      color: #f1f1f1;
+    }
 
-  #tabla-pdf table {
+    /* Navbar premium */
+    .navbar-zb {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #1a1a1a 100%) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      padding: 12px 0;
+      position: relative;
+      z-index: 1000;
+    }
+
+    .navbar-zb::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb), var(--rojo-zb));
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    .navbar-zb .navbar-brand {
+      color: var(--dorado-zb) !important;
+      font-weight: 800;
+      font-size: 1.8rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-zb .navbar-brand i {
+      background: linear-gradient(45deg, var(--dorado-zb), #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 10px;
+      font-size: 1.9rem;
+    }
+
+    .navbar-zb .nav-link {
+      color: #fff !important;
+      transition: var(--transicion);
+      font-weight: 500;
+      padding: 8px 15px !important;
+      border-radius: 6px;
+      margin: 0 5px;
+      position: relative;
+    }
+
+    .navbar-zb .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--dorado-zb);
+      transition: var(--transicion);
+      transform: translateX(-50%);
+    }
+
+    .navbar-zb .nav-link:hover::before {
+      width: 70%;
+    }
+
+    .navbar-zb .nav-link:hover {
+      color: var(--dorado-zb) !important;
+      transform: translateY(-2px);
+    }
+
+    .navbar-zb .nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--dorado-zb) !important;
+    }
+
+    .navbar-zb .nav-link.active::before {
+      width: 70%;
+    }
+
+    /* Botones premium */
+    .btn-zb {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: var(--transicion);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      box-shadow: var(--sombra);
+    }
+
+    .btn-zb::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      z-index: -1;
+      transition: var(--transicion);
+      opacity: 0.5;
+    }
+
+    .btn-zb-primary {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      color: white;
+    }
+
+    .btn-zb-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+      color: white;
+    }
+
+    .btn-zb-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-zb-secondary {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
+      color: var(--negro-zb);
+    }
+
+    .btn-zb-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+      color: var(--negro-zb);
+    }
+
+    .btn-zb-outline {
+      background: transparent;
+      border: 2px solid var(--dorado-zb);
+      color: var(--dorado-zb);
+    }
+
+    .btn-zb-outline:hover {
+      background: var(--dorado-zb);
+      color: var(--negro-zb);
+    }
+
+    /* Tarjetas premium */
+    .card-zb {
+      border-radius: 12px;
+      border: none;
+      box-shadow: var(--sombra);
+      transition: var(--transicion);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    body.dark-mode .card-zb {
+      background: #2a2a2a;
+    }
+
+    .card-zb:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .card-zb-header {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      font-weight: 700;
+      padding: 16px 24px;
+      border-bottom: 2px solid var(--dorado-zb);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-zb-header::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .card-zb-body {
+      padding: 24px;
+    }
+
+    /* Tabla premium */
+    .table-container {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--sombra);
+      margin-bottom: 24px;
+    }
+
+    .table-zb {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      margin: 0;
+    }
+
+    .table-zb thead th {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      font-weight: 600;
+      padding: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      position: relative;
+    }
+
+    .table-zb thead th::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb));
+    }
+
+    .table-zb tbody td {
+      padding: 16px;
+      vertical-align: middle;
+      border: none;
+      border-bottom: 1px solid #e0e0e0;
+      background-color: white;
+      transition: var(--transicion);
+    }
+
+    body.dark-mode .table-zb tbody td {
+      background-color: #2a2a2a;
+      color: #f1f1f1;
+      border-bottom: 1px solid #444;
+    }
+
+    .table-zb tbody tr {
+      transition: var(--transicion);
+    }
+
+    .table-zb tbody tr:hover {
+      transform: translateX(5px);
+    }
+
+    .table-zb tbody tr:hover td {
+      background-color: rgba(255, 68, 84, 0.05);
+    }
+
+    body.dark-mode .table-zb tbody tr:hover td {
+      background-color: rgba(255, 68, 84, 0.1);
+    }
+
+    /* Badges premium */
+    .badge-zb {
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-zb-rojo {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      color: white;
+    }
+
+    .badge-zb-dorado {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
+      color: var(--negro-zb);
+    }
+
+    /* Modal premium */
+    .modal-zb .modal-content {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--dorado-zb);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-zb .modal-header {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      border-bottom: 2px solid var(--dorado-zb);
+      padding: 20px;
+    }
+
+    .modal-zb .modal-title {
+      font-weight: 700;
+    }
+
+    .modal-zb .modal-body {
+      padding: 24px;
+    }
+
+    .modal-zb .modal-footer {
+      border-top: 1px solid #e0e0e0;
+      padding: 20px;
+    }
+
+    body.dark-mode .modal-zb .modal-footer {
+      border-top: 1px solid #444;
+    }
+
+    /* Formularios premium */
+    .form-control-zb {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: var(--transicion);
+      font-weight: 500;
+    }
+
+    .form-control-zb:focus {
+      border-color: var(--dorado-zb);
+      box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+      transform: translateY(-2px);
+    }
+
+    body.dark-mode .form-control-zb {
+      background-color: #333;
+      border-color: #444;
+      color: #f1f1f1;
+    }
+
+    /* Títulos premium */
+    .title-zb {
+      color: var(--negro-zb);
+      font-weight: 800;
+      position: relative;
+      padding-bottom: 16px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.2rem;
+    }
+
+    .title-zb::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb));
+      border-radius: 3px;
+    }
+
+    body.dark-mode .title-zb {
+      color: #f1f1f1;
+    }
+
+    /* Roles y jerarquías premium */
+    #lista-roles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .role-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+      transition: var(--transicion);
+      border-left: 4px solid var(--dorado-zb);
+    }
+
+    body.dark-mode .role-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+    }
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .role-title {
+      font-weight: 700;
+      color: var(--negro-zb);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    body.dark-mode .role-title {
+      color: var(--dorado-zb);
+    }
+
+    .role-percentage {
+      font-weight: 600;
+      color: var(--rojo-zb);
+      font-size: 1.2rem;
+    }
+
+    /* Estadísticas premium */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--sombra);
+      text-align: center;
+      transition: var(--transicion);
+      border-top: 4px solid var(--rojo-zb);
+    }
+
+    body.dark-mode .stat-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--dorado-zb);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--rojo-zb);
+      margin-bottom: 5px;
+    }
+
+    body.dark-mode .stat-value {
+      color: var(--dorado-zb);
+    }
+
+    .stat-label {
+      font-weight: 600;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive mejoras */
+    @media (max-width: 992px) {
+      .title-zb {
+        font-size: 1.8rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      
+      .title-zb {
+        font-size: 1.6rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      
+      .table-zb thead {
+        display: none;
+      }
+      
+      .table-zb tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .table-zb tbody td {
+        display: block;
+        text-align: right;
+        padding: 10px 15px;
+        position: relative;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      
+      .table-zb tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        color: var(--rojo-zb);
+      }
+      
+      body.dark-mode .table-zb tbody td::before {
+        color: var(--dorado-zb);
+      }
+      
+      .card-zb {
+        margin-bottom: 15px;
+      }
+      
+      .btn-group-responsive {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn-group-responsive .btn {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Scroll personalizado */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      border-radius: 10px;
+    }
+    
+    body.dark-mode ::-webkit-scrollbar-track {
+      background: #2a2a2a;
+    }
+    
+    body.dark-mode ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
+    }
+
+    /* Estilos para los botones de métodos de pago */
+    .metodo-pago {
+      display: none;
+    }
+
+    .btn-check:checked + .btn {
+      box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.5);
+      font-weight: bold;
+    }
+
+    .texto-pagos {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+
+    /* Limitar a 2 selecciones máximo */
+    .metodo-pago:checked ~ .metodo-pago:not(:checked) + .btn {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Impresión */
+    @media print {
+      nav, #btn-pdf, #btn-wsp {
+        display: none !important;
+      }
+
+      body {
+        background-color: white !important;
+        color: black;
+        font-size: 12pt;
+      }
+
+      .card {
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+        box-shadow: none !important;
+      }
+
+      .card-body {
+        padding: 10px;
+      }
+
+      .card-title {
+        font-weight: bold;
+        font-size: 14pt;
+      }
+
+      .card-text {
+        font-size: 12pt;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 16pt;
+      }
+    }
+
+    /* Efectos especiales */
+    .zb-glow {
+      position: relative;
+    }
+
+    .zb-glow::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, var(--rojo-zb), var(--dorado-zb), var(--rojo-zb));
+      background-size: 200% 200%;
+      border-radius: inherit;
+      animation: gradientShift 3s ease infinite;
+      filter: blur(8px);
+      opacity: 0.7;
+    }
+
+    /* Mejoras visuales adicionales */
+    .zb-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--dorado-zb), transparent);
+      margin: 30px 0;
+      border: none;
+    }
+
+    .zb-highlight {
+      background: linear-gradient(120deg, rgba(255, 68, 84, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--rojo-zb);
+    }
+
+    body.dark-mode .zb-highlight {
+      background: linear-gradient(120deg, rgba(255, 68, 84, 0.15) 0%, rgba(212, 175, 55, 0.15) 100%);
+    }
+    /* Estilos para Roles y Jerarquías - Diseño Mejorado */
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.role-item-compact {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 10px;
+  padding: 16px;
+  border-left: 4px solid var(--dorado-zb);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark-mode .role-item-compact {
+  background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
+}
+
+.role-item-compact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.role-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--negro-zb);
+  display: flex;
+  align-items: center;
+}
+
+body.dark-mode .role-name {
+  color: var(--dorado-zb);
+}
+
+.role-percentage-badge {
+  background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+}
+
+.role-assignment {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+body.dark-mode .role-assignment {
+  color: #adb5bd;
+}
+
+.role-icon {
+  margin-right: 8px;
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+/* Colores específicos para cada rol */
+.role-jefe .role-percentage-badge { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); }
+.role-tecnico .role-percentage-badge { background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); }
+.role-auxiliar .role-percentage-badge { background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); }
+.role-ayudante .role-percentage-badge { background: linear-gradient(135deg, #6f42c1 0%, #5a2d95 100%); }
+.role-practicante .role-percentage-badge { background: linear-gradient(135deg, #fd7e14 0%, #e66407 100%); }
+
+/* Efecto de brillo sutil */
+.role-item-compact::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  transform: rotate(45deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.role-item-compact:hover::after {
+  opacity: 0.3;
+}
+
+/* ---------- Mejora visual: tarjetas compactas para registros ---------- */
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 14px;
+}
+
+/* Card individual del registro (UI) */
+.record-card {
+  background: linear-gradient(135deg, #ffffff, #fbfbfb);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: var(--transicion);
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+body.dark-mode .record-card {
+  background: linear-gradient(135deg, #2b2b2b, #303030);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Header compacto: fecha / hora / cliente */
+.record-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.record-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.record-meta {
+  font-size: 0.9rem;
+  color: #6b6b6b;
+  font-weight: 600;
+}
+
+.record-title {
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--negro-zb);
+}
+
+/* Grupos internos (3 bloques) */
+.record-groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+/* En desktop podemos mostrar 2 columnas internas */
+@media(min-width: 992px) {
+  .record-groups {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Bloques: resumen, servicio, pagos */
+.record-block {
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.02);
+  font-size: 0.9rem;
+}
+
+body.dark-mode .record-block {
+  background: rgba(255,255,255,0.02);
+}
+
+.record-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.record-label {
+  min-width: 100px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+}
+
+.record-value {
+  font-weight: 600;
+  color: #222;
+}
+
+/* Badges para pago / rol / método */
+.record-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.record-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+
+/* Tabla oculta para UI (se mostrará solo en PDF) */
+.table-oculta-para-ui { display: none !important; }
+
+/* Sticky header para la sección (opcional) */
+.table-header-sticky {
+  position: sticky;
+  top: 72px; /* ajusta según tu navbar */
+  z-index: 900;
+}
+
+/* Ajustes para acciones pequeñas */
+.btn-sm-ico {
+  padding: 6px 8px;
+  font-size: 0.9rem;
+}
+
+/* Mejor contraste en etiquetas pequeñas */
+.small-muted {
+  color: #6c757d;
+  font-size: 0.86rem;
+}
+
+/* Para impresión: mostrar la tabla completa (ya la tienes) */
+@media print {
+  .records-grid, .record-card { display: none !important; }
+  .table-oculta-para-ui { display: block !important; }
+}
+/* ---------- Recuadros y diseño mejorado para la información ---------- */
+
+/* Caja alrededor de valores individuales (recuadro pequeño) */
+.info-box {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01));
+  border: 1px solid rgba(0,0,0,0.06);
+  font-weight: 700;
+  color: #222;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+}
+
+/* Recuadros más visibles (para valores financieros, etc.) */
+.info-box-strong {
+  background: linear-gradient(135deg, rgba(255,255,255,1), rgba(250,250,250,1));
+  border: 1px solid rgba(13,110,253,0.12);
+  color: #0d6efd;
+}
+
+/* Contenedor resumen por trabajador (UI) */
+.worker-summary {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+/* Card para cada trabajador (recuadro) */
+.worker-card {
+  background: linear-gradient(135deg, #fff, #fbfbfb);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transition: var(--transicion);
+  cursor: pointer;
+}
+
+body.dark-mode .worker-card {
+  background: linear-gradient(135deg, #2b2b2b, #2f2f2f);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.worker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra-hover);
+}
+
+/* Titular dentro de worker-card */
+.worker-name {
+  font-weight: 800;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Datos alineados en filas dentro card */
+.worker-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.92rem;
+  margin-bottom: 6px;
+  align-items: center;
+}
+
+/* Pequeños tags en el resumen de empleados */
+.worker-tag {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  background: linear-gradient(135deg, var(--rojo-zb), #e63e4d);
+  color: #fff;
+}
+
+/* Mejor separación entre secciones */
+.section-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.04);
+  margin: 12px 0;
+}
+
+/* Tabla de resumen por trabajador (visible en UI y también en PDF) */
+.table-worker {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.table-worker th, .table-worker td {
+  padding: 8px 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.table-worker thead th {
+  background: linear-gradient(135deg, #212529, #2b2b2b);
+  color: white;
+  font-weight: 700;
+}
+
+/* Mantener estilo al imprimir */
+@media print {
+  .worker-card, .record-card { box-shadow: none !important; border: 1px solid #ccc !important; }
+}
+/* Animación / resaltado para indicadores cuando cambian */
+#total-motos, #total-ganancias, #total-empleados, #total-servicios {
+  transition: transform 0.35s ease, color 0.35s ease;
+  display: inline-block;
+}
+
+.stat-anim {
+  transform: translateY(-6px) scale(1.04);
+  color: var(--rojo-zb) !important;
+}
+
+/* ---------- Badges por rol (colores representativos) ---------- */
+.role-badge-jefe        { background: #dc3545; color:#fff; }
+.role-badge-tecnico     { background: #2360e0; color:#fff; }
+.role-badge-auxiliar    { background: #28a745; color:#fff; }
+.role-badge-ayudante    { background: #6f42c1; color:#fff; }
+.role-badge-practicante { background: #fd7e14; color:#fff; }
+.role-badge-default     { background: #6c757d; color:#fff; }
+
+/* Aplicado a badges en tarjetas/worker tags */
+.record-badge, .worker-tag {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  font-size: .85rem;
+}
+
+/* Info-box pequeño (dentro de tarjetas) */
+.info-box {
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:8px;
+  background: rgba(0,0,0,0.04);
+  font-weight:600;
+  font-size:0.92rem;
+}
+body.dark-mode .info-box { background: rgba(255,255,255,0.04); }
+
+/* Animación ligera al cambiar stats */
+@keyframes pop {
+  0%   { transform: translateY(-6px) scale(0.98); opacity: 0.6; }
+  60%  { transform: translateY(0) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.stat-anim { animation: pop .55s cubic-bezier(.2,.9,.35,1); }
+
+/* ---------- Footer base profesional (barra sólida en la parte inferior) ---------- */
+/* Barra sólida que se pega al final de la página, tipo 'base' de Zona Biker */
+.zb-footer-fixed {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #111; /* color puro, profesional (negro) - cambia si quieres #ff4454 */
+  color: #f6e6b4;   /* dorado suave para texto (contraste con negro) */
+  padding: 12px 20px;
+  z-index: 1200;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.25);
+  font-size: 0.95rem;
+}
+
+/* Texto secundario dentro del footer */
+.zb-footer-fixed .muted { color: rgba(246,230,180,0.85); font-size: 0.9rem; }
+
+/* Ajustes mobile para que no ocupe mucho espacio */
+@media (max-width: 576px) {
+  .zb-footer-fixed { flex-direction: column; gap:6px; padding:10px; font-size:0.9rem; }
+}
+
+/* Alineación numérica y estilo de price boxes dentro de las tarjetas */
+.table-oculta-para-ui td.numeric,
+.table-oculta-para-ui th.numeric { text-align: right; padding-right: 12px; }
+
+.pricing-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.price-box {
+  background: rgba(13,110,253,0.06);
+  border: 1px solid rgba(13,110,253,0.12);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 110px;
+  text-align: right;
+}
+.price-box .label { display:block; font-size:11px; color:#6c757d; }
+.price-box .value { font-weight:700; font-size:14px; }
+
+/* En las tarjetas, valores destacados */
+.record-value .info-box.info-box-strong { font-weight: 700; font-size: 15px; }
+
+/* Ajuste para detalles: tabla en PDF se ve más profesional */
+.table-oculta-para-ui th, .table-oculta-para-ui td { vertical-align: middle; }
+.worker-summary,
+.table-worker,
+.worker-summary + .table-worker,
+.table-worker + .worker-card,
+.table-worker + .worker-summary {
+  margin-bottom: 64px !important;
+}
+
+/* Si la tabla viene envuelta en un contenedor con clase .mt-4 (como en tu código), aseguramos también: */
+.mt-4 > .table-worker,
+.mt-4 > .worker-summary {
+  margin-bottom: 64px !important;
+}
+
+/* espacio debajo del panel de detalles para que no choque con el footer fijo */
+#detalles-empleado {
+  margin-bottom: calc(var(--footer-gap) + 8px);
+}
+
+/* si el detalle contiene una .card, damos un poco más de espacio */
+#detalles-empleado .card {
+  margin-bottom: calc(var(--footer-gap) + 4px);
+}
+
+/* Opcional: si quieres que el panel destaque visualmente un poco */
+#detalles-empleado .card {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* ========== CORRECCIONES PARA VISTA MÓVIL ========== */
+@media (max-width: 768px) {
+  /* Prevenir scroll horizontal */
+  html, body {
+    overflow-x: hidden;
     width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    position: relative;
+  }
+  
+  .container {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* Ajustar navbar para móviles */
+  .navbar-zb .navbar-toggler {
+    margin-right: 15px; /* Mover hamburguesa más a la izquierda */
+    border: none;
+    padding: 4px 8px;
+  }
+  
+  .navbar-zb .navbar-toggler:focus {
+    box-shadow: none;
+    outline: 2px solid var(--dorado-zb);
+  }
+  
+  .navbar-zb .navbar-collapse {
+    background: linear-gradient(135deg, var(--negro-zb) 0%, #1a1a1a 100%);
+    padding: 15px;
+    border-radius: 0 0 12px 12px;
+    margin-top: 8px;
+  }
+  
+  /* Asegurar que todo el contenido esté dentro del viewport */
+  .card-zb, .stats-container, .records-grid, .worker-summary {
+    max-width: 100%;
+  }
+  
+  /* Ajustar padding para evitar desbordamiento */
+  .card-zb-body {
+    padding: 16px;
+  }
+  
+  /* Footer adjustments */
+  .site-footer {
+    width: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .site-footer .footer-inner {
+    padding: 0 15px;
+  }
+  
+  /* Botones en móvil */
+  .btn-group-responsive {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btn-group-responsive .btn {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  /* Ajustar cards de estadísticas */
+  .stats-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .stat-card {
+    padding: 18px;
+  }
+  
+  /* Ajustar grid de registros */
+  .records-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .record-card {
+    padding: 12px;
+  }
+  
+  /* Ajustar worker summary */
+  .worker-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Asegurar que las tablas no causen scroll horizontal */
+  .table-container {
     overflow: hidden;
   }
+  
+  #tabla-pdf {
+    padding: 5px;
+  }
+  
+  /* Ajustar modal para móviles */
+  .modal-zb .modal-dialog {
+    margin: 10px;
+  }
+  
+  .modal-zb .modal-content {
+    border-radius: 12px;
+  }
+  
+  /* Ajustar filtros en móviles */
+  .card-zb-body .row {
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+  
+  .card-zb-body .col-md-3,
+  .card-zb-body .col-md-4 {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
 
-  #tabla-pdf th {
-    background: linear-gradient(90deg, #343a40, #495057);
-    color: #ffffff;
+/* Correcciones adicionales para pantallas muy pequeñas */
+@media (max-width: 576px) {
+  /* Ajustar navbar brand */
+  .navbar-zb .navbar-brand {
+    font-size: 1.5rem;
+  }
+  
+  .navbar-zb .navbar-brand i {
+    font-size: 1.6rem;
+  }
+  
+  /* Ajustar título principal */
+  .title-zb {
+    font-size: 1.5rem;
+    margin: 20px 0;
+  }
+  
+  .title-zb::after {
+    width: 80px;
+    height: 4px;
+  }
+  
+  /* Ajustar padding general */
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  /* Ajustar cards */
+  .card-zb-header {
+    padding: 14px 16px;
+  }
+  
+  /* Mejorar visualización de roles */
+  .roles-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .role-item-compact {
+    padding: 14px;
+  }
+  
+  /* Ajustar botones de acción en registros */
+  .record-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .btn-sm-ico {
+    padding: 5px 7px;
+    font-size: 0.85rem;
+  }
+  
+  /* Footer más compacto */
+  .site-footer {
+    padding: 12px 0;
+  }
+  
+  .site-footer .footer-inner {
+    gap: 8px;
+  }
+  
+  .site-footer .footer-left, 
+  .site-footer .footer-right {
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+  
+  .site-footer .footer-sep {
+    display: none;
+  }
+}
+
+/* Prevenir específicamente el scroll horizontal */
+@media (max-width: 767px) {
+  body {
+    position: relative;
+    width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Forzar que todos los elementos se mantengan dentro del viewport */
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  [class*="col-"] {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* Ajuste específico para el botón de hamburguesa */
+.navbar-toggler {
+  position: relative;
+  left: -5px; /* Mover ligeramente a la izquierda */
+}
+
+/* Garantizar que el footer esté siempre centrado y no se desborde */
+.site-footer {
+  box-sizing: border-box;
+}
+/* ===================== ARREGLOS SOLO PARA MÓVIL (≤768px) ===================== */
+@media (max-width: 768px) {
+
+  /* 1) Evitar scroll lateral de la página */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Forzar que contenedores no usen 100vw que provoca desbordes */
+  [style*="width: 100vw"], [style*="100vw"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Asegurar que filas/columns no generan overflow */
+  .container, .row, .records-grid, .worker-summary {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Evitar que sombras/paddings empujen fuera del viewport */
+  .record-card, .worker-card, .card-zb, .stat-card {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* 2) Footer fijo en móvil y espacio inferior para contenido (no toca desktop) */
+  .site-footer {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    width: 100%;
+    box-shadow: 0 -6px 18px rgba(0,0,0,0.25);
+  }
+
+  /* Reserva espacio para el footer para que no lo tape el contenido */
+  :root {
+    --mobile-footer-height: 64px; /* si tu footer es otra altura ajústala */
+  }
+  body {
+    padding-bottom: calc(var(--mobile-footer-height) + 12px);
+  }
+
+  /* Ajustes para .footer-inner (evitar reflows al mostrarse contenido) */
+  .site-footer .footer-inner {
+    padding: 8px 12px;
+  }
+
+  /* 3) Tabla resumen por trabajador: scroll horizontal dentro de la tabla */
+  .table-worker {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* smooth on iOS */
+    white-space: nowrap; /* evita wrap de celdas */
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* IE/Edge */
+    scrollbar-width: thin; /* Firefox */
+  }
+
+    .table-worker th {
+    text-align: center; /* encabezados centrados */
+    padding: 8px 10px;
     font-weight: 600;
-    padding: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border: 1px solid #dee2e6;
   }
 
-  #tabla-pdf td {
-    padding: 10px 12px;
-    color: #212529;
+    .table-worker td {
+    text-align: right; /* datos alineados a la derecha */
+    padding: 8px 10px; /* separarlos un poco */
     font-size: 14px;
-    border: 1px solid #dee2e6;
-    vertical-align: middle;
-    background-color: #ffffff;
   }
 
-  #tabla-pdf tr:hover td {
-    background-color: #f1f1f1;
-    transition: background-color 0.2s ease-in-out;
+  /* Para que no se vean pegados al borde del contenedor */
+  .table-worker {
+    padding-left: 5px;
+    padding-right: 5px;
   }
 
-  /* Modo oscuro general */
-  body.dark-mode {
-    background-color: #121212 !important;
-    color: #f1f1f1 !important;
+  /* Opcional: si quieres que la primera columna (Empleado) quede alineada a la izquierda */
+  .table-worker td:first-child {
+    text-align: left;
   }
 
-  body.dark-mode .navbar {
-    background-color: #1f1f1f !important;
+  /* Mostrar scroll thumb horizontal más visible (solo móvil) */
+  .table-worker::-webkit-scrollbar {
+    height: 8px;
+  }
+  .table-worker::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb));
   }
 
-  body.dark-mode #toggle-dark {
-    background-color: #f8f9fa;
-    color: #212529;
+  /* Si el contenido de detalles aparece, evitar que empuje el layout horizontalmente */
+  #detalles-empleado {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  body.dark-mode #tabla-pdf {
-    background-color: #1e1e1e;
-    color: #f1f1f1;
+  /* Evitar movimientos por "overflow-anchor" */
+  html, body, #contenedor-registros {
+    overflow-anchor: none;
+  }
+}
+@media (max-width: 768px) {
+  #tabla-pdf {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  #tabla-pdf table {
+    min-width: 720px; /* ajusta según columnas, para que aparezca la scrollbar horizontal */
+  }
+}
+
+
+
+/* ===================== Footer al final de la página — SOLO MÓVIL (≤768px) ===================== */
+@media (max-width: 768px) {
+
+  /* 1) Forzar el layout de la página como columna para asegurar footer al final */
+  html, body {
+    height: 100%;
+    min-height: 100%;
   }
 
-  body.dark-mode #tabla-pdf th {
-    background: linear-gradient(90deg, #2c2c2c, #3c3c3c) !important;
-    color: #ffffff;
+  /* Usamos body como contenedor flex para empujar footer hacia abajo */
+  body {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100vh !important;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+    /* Si ya tienes padding-bottom para footer dinámico, puedes mantenerlo, pero no hace falta position:fixed */
+    padding-bottom: 0; /* quitamos el padding que reservaba un footer fijo */
+    overflow-x: hidden;
   }
 
-  body.dark-mode #tabla-pdf td {
-    background-color: #2a2a2a;
-    color: #ffffff;
+  /* 2) Hacemos que el contenido principal crezca (esto empuja el footer hacia el final) */
+  /* Si tu contenedor principal es .container (como en tu HTML), le ponemos flex:1 */
+  .container {
+    flex: 1 0 auto;
+    /* asegurar que no cause overflow horizontal */
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
-  body.dark-mode #tabla-pdf tr:hover td {
-    background-color: #3a3a3a;
+  /* 3) Asegurar que el footer no esté FIXED en móvil y se quede al final del flujo */
+  .site-footer {
+    position: relative !important; /* IMPORTANTE: anula position:fixed para móviles */
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100%;
+    transform: none !important;
+    -webkit-transform: none !important;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.12); /* opcional */
+    margin-top: 12px; /* separador visual del contenido */
   }
-</style>
+
+  /* 4) Evitar que algún ancestor con transform rompa el flujo */
+  /* (si alguna regla añade transform a un padre, esto lo anula en móvil) */
+  html, body, .container, #contenedor-registros {
+    transform: none !important;
+    -webkit-transform: none !important;
+  }
+
+  /* 5) Pequeños ajustes de espacio cuando detalle aparece */
+  #detalles-empleado {
+    margin-bottom: 8px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
 
 
-<head>
-  <meta charset="UTF-8">
-  <title>📅 Registros de Hoy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+  </style>
 </head>
 <body class="bg-light">
 
-  <!-- 🔝 Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- 🔝 Navbar Premium -->
+<nav class="navbar navbar-expand-lg navbar-zb fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="/">Zona Biker</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="/">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="/registros-hoy">Registros de Hoy</a></li>
-          <li class="nav-item"><a class="nav-link" href="/registros-todos">Todos los Registros</a></li>
-        </ul>
-      </div>
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-motorcycle"></i> Zona Biker
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Inicio</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/registros-hoy"><i class="fas fa-list me-1"></i> Registros de Hoy</a></li>
+                <li class="nav-item"><a class="nav-link" href="/registros-todos"><i class="fas fa-history me-1"></i> Todos los Registros</a></li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
   <!-- 🧾 Contenido -->
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">📅 Registros de Hoy</h2>
+  <div class="container mt-4">
+    <h2 class="text-center title-zb mb-4">
+      <i class="fas fa-calendar-day me-2"></i>Registros de Hoy
+    </h2>
 
-<div class="text-center mb-4">
-  <button class="btn btn-secondary me-2" id="toggle-dark">🌙 Modo Oscuro</button>
-  <button class="btn btn-danger" id="btn-pdf">📄 Descargar PDF</button>
-  <a class="btn btn-success ms-2" id="btn-wsp" target="_blank">📤 Compartir por WhatsApp</a>
-  <div class="container mb-4">
-  <div class="row justify-content-center">
-    <div class="col-md-3">
-      <label>Desde:</label>
-      <input type="date" id="fechaInicio" class="form-control">
+    <!-- Estadísticas -->
+    <div class="stats-container mb-4 fade-in">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-motorcycle"></i></div>
+        <div class="stat-value" id="total-motos">0</div>
+        <div class="stat-label">Motos Atendidas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+        <div class="stat-value" id="total-ganancias">S/0.00</div>
+        <div class="stat-label">Ganancias Totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-value" id="total-empleados">3</div>
+        <div class="stat-label">Empleados Activos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-tools"></i></div>
+        <div class="stat-value" id="total-servicios">0</div>
+        <div class="stat-label">Servicios Realizados</div>
+      </div>
     </div>
-    <div class="col-md-3">
-      <label>Hasta:</label>
-      <input type="date" id="fechaFin" class="form-control">
-      
-    </div>
-    <div class="col-md-2 d-flex align-items-end">
-      <button class="btn btn-primary w-100 me-2" onclick="filtrarPorFechas()">🔎 Filtrar</button>
-      <button class="btn btn-secondary w-100" onclick="cargarRegistrosHoy()">🔁 Mostrar Hoy</button>
-      
-    </div>
-  </div>
-</div>
-<!-- 📌 Roles y jerarquías -->
-<div class="card shadow-sm p-3 mb-4" style="max-width: 400px; font-size: 14px;">
-  <h6 class="fw-bold mb-2">📋 Roles y Jerarquías</h6>
-  <ul id="lista-roles" class="list-unstyled mb-0"></ul>
-</div>
 
-</div>
+    <div class="d-flex justify-content-center mb-4 btn-group-responsive">
+      <button class="btn btn-zb-outline me-2 mb-2" id="toggle-dark">
+        <i class="fas fa-moon me-1"></i> Modo Oscuro
+      </button>
+      <button class="btn btn-zb-primary me-2 mb-2" id="btn-pdf">
+        <i class="fas fa-file-pdf me-1"></i> Descargar PDF
+      </button>
+      <a class="btn btn-zb-secondary mb-2" id="btn-wsp" target="_blank">
+        <i class="fab fa-whatsapp me-1"></i> Compartir por WhatsApp
+      </a>
+    </div>
+
+    <div class="card-zb mb-4 fade-in">
+      <div class="card-zb-header">
+        <i class="fas fa-filter me-2"></i>Filtrar por Fechas
+      </div>
+      <div class="card-zb-body">
+        <div class="row">
+          <div class="col-md-3 mb-2">
+            <label class="form-label">Desde:</label>
+            <input type="date" id="fechaInicio" class="form-control form-control-zb">
+          </div>
+          <div class="col-md-3 mb-2">
+            <label class="form-label">Hasta:</label>
+            <input type="date" id="fechaFin" class="form-control form-control-zb">
+          </div>
+          <div class="col-md-4 mb-2 d-flex align-items-end">
+            <button class="btn btn-zb-primary w-100 me-2" onclick="filtrarPorFechas()">
+              <i class="fas fa-search me-1"></i> Filtrar
+            </button>
+            <button class="btn btn-zb-outline w-100" onclick="cargarRegistrosHoy()">
+              <i class="fas fa-sync me-1"></i> Mostrar Hoy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📌 Roles y jerarquías -->
+    <div class="card-zb shadow-sm mb-4 fade-in">
+      <div class="card-zb-header">
+        <i class="fas fa-users-cog me-2"></i>Roles y Jerarquías
+      </div>
+      <div class="card-zb-body">
+        <ul id="lista-roles" class="list-unstyled mb-0 row"></ul>
+      </div>
+    </div>
 
     <div id="contenedor-registros" class="row gy-4"></div>
-<!-- 🔽 Agrega esto después de contenedor-registros -->
-<div id="detalles-empleado" class="mt-4" style="display: none;"></div>
-  
+    
+    <!-- 🔽 Detalles del empleado -->
+    <div id="detalles-empleado" class="mt-4" style="display: none;"></div>
   </div>
 
   <!-- 🔽 Modal para editar registro -->
-<!-- 🔽 Modal para editar registro -->
-<div class="modal fade" id="modalEditar" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">✏️ Editar Registro</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="formEditar">
-          <input type="hidden" id="edit-id">
+  <div class="modal fade modal-zb" id="modalEditar" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Registro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditar">
+            <input type="hidden" id="edit-id">
 
-          <!-- 📅 Fecha y Hora -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Fecha</label>
-              <input type="date" id="edit-fecha" class="form-control">
+            <!-- 📅 Fecha y Hora -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Fecha</label>
+                <input type="date" id="edit-fecha" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Hora</label>
+                <input type="time" id="edit-hora" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Hora</label>
-              <input type="time" id="edit-hora" class="form-control">
-            </div>
-          </div>
 
-          <!-- 👤 Cliente y Teléfono -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Cliente</label>
-              <input type="text" id="edit-cliente" class="form-control">
+            <!-- 👤 Cliente y Teléfono -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Cliente</label>
+                <input type="text" id="edit-cliente" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Teléfono</label>
+                <input type="text" id="edit-telefono" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Teléfono</label>
-              <input type="text" id="edit-telefono" class="form-control">
-            </div>
-          </div>
 
-          <!-- 🏍️ Moto -->
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Marca</label>
-              <input type="text" id="edit-marca" class="form-control">
+            <!-- 🏍️ Moto -->
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Marca</label>
+                <input type="text" id="edit-marca" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Modelo</label>
+                <input type="text" id="edit-modelo" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Cilindrada</label>
+                <input type="text" id="edit-cilindrada" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Modelo</label>
-              <input type="text" id="edit-modelo" class="form-control">
-            </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label">Cilindrada</label>
-              <input type="text" id="edit-cilindrada" class="form-control">
-            </div>
-          </div>
 
-          <!-- 🔢 Kilometraje y Placa -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Kilometraje</label>
-              <input type="number" id="edit-kilometraje" class="form-control">
+            <!-- 🔢 Kilometraje y Placa -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Kilometraje</label>
+                <input type="number" id="edit-kilometraje" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Placa</label>
+                <input type="text" id="edit-placa" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Placa</label>
-              <input type="text" id="edit-placa" class="form-control">
-            </div>
-          </div>
 
-          <!-- 👨‍🔧 Empleado -->
-          <div class="mb-3">
-            <label class="form-label">Empleado</label>
-            <input type="text" id="edit-empleado" class="form-control">
-          </div>
+            <!-- 👨‍🔧 Empleado -->
+            <div class="mb-3">
+              <label class="form-label">Empleado</label>
+              <input type="text" id="edit-empleado" class="form-control form-control-zb">
+            </div>
+            
+            <div class="mb-3">
+              <label class="form-label">Rol</label>
+              <select id="edit-rol" class="form-select form-control-zb" required>
+                <option value="" disabled>Selecciona rol</option>
+                <option value="Jefe" style="color:red; font-weight:bold;">Jefe</option>
+                <option value="Tecnico" style="color:rgb(35,85,224); font-weight:bold;">Técnico</option>
+                <option value="Auxiliar" style="color:green; font-weight:bold;">Auxiliar</option>
+                <option value="Ayudante" style="color:purple; font-weight:bold;">Ayudante</option>
+                <option value="Practicante" style="color:orange; font-weight:bold;">Practicante</option>
+              </select>
+            </div>
 
-          <!-- 🔧 Servicios -->
-          <div class="mb-3">
-            <label class="form-label">Servicios</label>
-            <textarea id="edit-servicios" class="form-control" rows="2"></textarea>
-          </div>
+            <!-- 🔧 Servicios -->
+            <div class="mb-3">
+              <label class="form-label">Servicios</label>
+              <textarea id="edit-servicios" class="form-control form-control-zb" rows="2"></textarea>
+            </div>
 
-          <!-- 💰 Métodos de pago y montos -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Método de Pago</label>
-              <input type="text" id="edit-metodo-pago" class="form-control">
+            <!-- 💰 Métodos de pago y montos -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Método de Pago</label>
+                <input type="text" id="edit-metodo-pago" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Pago (Costo Total)</label>
+                <input type="number" id="edit-costo" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Pago (Costo Total)</label>
-              <input type="number" id="edit-costo" class="form-control">
-            </div>
-          </div>
 
-          <!-- 🛠 Mano de obra y Comisión -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Costo Mano de Obra</label>
-              <input type="number" id="edit-costo-mano-obra" class="form-control">
+            <!-- 🛠 Mano de obra y Comisión -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Costo Mano de Obra</label>
+                <input type="number" id="edit-costo-mano-obra" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Comisión</label>
+                <input type="number" id="edit-comision" class="form-control form-control-zb" readonly>
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Comisión</label>
-              <input type="number" id="edit-comision" class="form-control" readonly>
-            </div>
-          </div>
 
-          <!-- 🛒 Repuesto -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Repuesto</label>
-              <input type="text" id="edit-repuesto" class="form-control">
+            <!-- 🛒 Repuesto -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Repuesto</label>
+                <input type="text" id="edit-repuesto" class="form-control form-control-zb">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Costo Repuesto</label>
+                <input type="number" id="edit-ganancia-repuesto" class="form-control form-control-zb">
+              </div>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Costo Repuesto</label>
-              <input type="number" id="edit-ganancia-repuesto" class="form-control">
-            </div>
-          </div>
-
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="guardarEdicion()">💾 Guardar cambios</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-zb-primary" onclick="guardarEdicion()">
+            <i class="fas fa-save me-1"></i> Guardar cambios
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+<footer class="site-footer" role="contentinfo" aria-label="Pie de página Zona Biker">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M4 12h16" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M6 6l3 6" stroke="rgba(255,255,255,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div>© <span id="current-year-footer"></span> <strong>Zona Biker</strong></div>
+          <div class="footer-meta">Servicio y control de registros</div>
+        </div>
+      </div>
+    </div>
 
+    <div class="footer-right">
+      <div class="footer-meta">Diseño &amp; Datos</div>
+      <div class="footer-sep">·</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="color:var(--dorado-zb); font-weight:600;">Zona</span>
+        <small class="footer-meta">v1.0</small>
+      </div>
+    </div>
+  </div>
+</footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/html2pdf.bundle.min.js"></script>
   <script src="js/registros-hoy.js"></script>
+  
 <script>
   document.getElementById('toggle-dark').addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
+    // Guardar preferencia en localStorage
+    localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
   });
+
+  // Cargar preferencia de modo oscuro
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark-mode');
+  }
+let dashboardPollIntervalId = null;
+  // Función para actualizar estadísticas
+function actualizarEstadisticas(registros) {
+  // total de registros del día
+  const totalMotosHoy = registros.length;
+
+  // total pagos
+  const totalPagos = registros.reduce((t, r) => t + (parseFloat(r.costo) || 0), 0);
+
+  // servicios realizados: contar solo registros con 'servicios' no vacío
+  const serviciosRealizados = registros.filter(r => r.servicios && String(r.servicios).trim() !== '').length;
+
+  // empleados activos (según tu solicitud, fijo 3)
+  const empleadosActivos = 3;
+
+  // actualizar DOM con animación si cambia
+  updateNumber('total-motos', totalMotosHoy);
+  updateNumber('total-ganancias', `S/${totalPagos.toFixed(2)}`);
+  updateNumber('total-empleados', empleadosActivos);
+  updateNumber('total-servicios', serviciosRealizados);
+}
+function updateNumber(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const valueStr = String(value);
+  if (el.textContent === valueStr) return; // sin cambio
+  el.textContent = valueStr;
+  el.classList.add('stat-anim');
+  setTimeout(() => el.classList.remove('stat-anim'), 600);
+}
+
+/**
+ * Carga los registros de HOY desde backend y actualiza UI:
+ * - actualiza estadísticas (arriba)
+ * - vuelve a renderizar tarjetas/tablas con renderizarRegistros(...)
+ */
+async function cargarRegistrosHoy() {
+  try {
+    const res = await fetch('/api/registros/hoy');
+    if (!res.ok) throw new Error('Error al obtener registros de hoy');
+    const registros = await res.json();
+
+    // Actualizar indicadores (en tiempo real)
+    actualizarEstadisticas(registros);
+
+    // Renderizar registros en la UI (mantiene la tabla PDF y worker summary)
+    // Si no quieres renderizar todo cada poll, se podría optimizar; por ahora refrescamos todo.
+    renderizarRegistros(registros, 'Hoy');
+  } catch (err) {
+    console.error('Error en cargarRegistrosHoy:', err);
+    // opcional: mostrar alerta pequeña en UI si quieres
+  }
+}
+
+/**
+ * Inicia polling para actualizar dashboard en tiempo real.
+ * @param {number} intervalMs intervalo en ms (por defecto 5000ms)
+ */
+function startDashboardRealtime(intervalMs = 5000) {
+  // limpiar si ya hay uno corriendo
+  if (dashboardPollIntervalId) clearInterval(dashboardPollIntervalId);
+  // Ejecutar inmediatamente y luego en intervalo
+  cargarRegistrosHoy();
+  dashboardPollIntervalId = setInterval(cargarRegistrosHoy, intervalMs);
+}
+
+/* --- Reemplaza/actualiza tu DOMContentLoaded para inicializar una sola vez --- */
+document.addEventListener('DOMContentLoaded', function() {
+  cargarRoles();             // carga roles (existing)
+  startDashboardRealtime(5000); // actualiza cada 5s (ajusta si quieres 3s/10s)
+});
+function cargarRoles() {
+  const rolesContainer = document.getElementById('lista-roles');
+  const roles = [
+    { 
+      nombre: "Jefe", 
+      porcentaje: "100%", 
+      asignado: "Kike",
+      icono: "fa-crown",
+      clase: "role-jefe"
+    },
+    { 
+      nombre: "Técnico", 
+      porcentaje: "70%", 
+      asignado: "Fabrizio",
+      icono: "fa-tools",
+      clase: "role-tecnico"
+    },
+    { 
+      nombre: "Auxiliar", 
+      porcentaje: "50%", 
+      asignado: "Jose",
+      icono: "fa-user-shield",
+      clase: "role-auxiliar"
+    },
+    { 
+      nombre: "Ayudante", 
+      porcentaje: "30%", 
+      asignado: "Sin asignar",
+      icono: "fa-hands-helping",
+      clase: "role-ayudante"
+    },
+    { 
+      nombre: "Practicante", 
+      porcentaje: "20%", 
+      asignado: "Sin asignar",
+      icono: "fa-graduation-cap",
+      clase: "role-practicante"
+    }
+  ];
+  
+  let html = '';
+  roles.forEach(rol => {
+    html += `
+      <div class="role-item-compact ${rol.clase}">
+        <div class="role-header">
+          <div class="role-name">
+            <i class="fas ${rol.icono} role-icon"></i> ${rol.nombre}
+          </div>
+          <span class="role-percentage-badge">${rol.porcentaje}</span>
+        </div>
+        <div class="role-assignment">
+          → ${rol.asignado}
+        </div>
+      </div>`;
+  });
+  
+  rolesContainer.innerHTML = html;
+}
+
+  // Llamar a cargarRoles cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', function() {
+    cargarRoles();
+    cargarRegistrosHoy();
+  });
+
 function calcularComision(rol, manoObra) {
   const porcentajes = {
     "Jefe": 1.0,
@@ -344,55 +2104,94 @@ function calcularComision(rol, manoObra) {
   return manoObra * porcentaje;
 }
 
-function mostrarDetallesEmpleado(nombre, fecha) {
-  fetch('/api/registros')
-    .then(res => res.json())
-    .then(registros => {
-      const filtrados = registros.filter(r => {
-        const fechaR = new Date(r.fecha).toLocaleDateString('es-PE');
-        return r.empleado === nombre && fechaR === fecha;
-      });
+function mostrarDetallesEmpleado(nombre, registros) {
+  const filtrados = registros.filter(r => r.empleado === nombre);
+  if (filtrados.length === 0) return;
 
-      if (filtrados.length === 0) return;
+  let totalManoObra = 0;
+  let totalComision = 0;
+  let wspTexto = `🧰 Motos atendidas por ${nombre}\n`;
 
-      let html = `
-        <div class="card shadow border border-dark">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="card-title mb-0">🧰 Motos atendidas por <strong>${nombre}</strong> el ${fecha}</h5>
-              <button class="btn btn-sm btn-outline-danger" onclick="cerrarDetallesEmpleado()">✖️ Cerrar</button>
-            </div>
-            <ul class="list-group list-group-flush">`;
-
-      filtrados.forEach(r => {
-      const costo = parseFloat(r.costo) || 0;
-      const manoObra = parseFloat(r.costo_mano_obra) || 0;
-      const comision = calcularComision(r.rol, manoObra);
-
-
-        html += `
-          <li class="list-group-item">
-            🛵 <strong>${r.marca} ${r.modelo}</strong><br>
-            📅 ${fecha} ⏰ ${r.hora}<br>
-            👤 Cliente: ${r.cliente} | 🔢 Placa: ${r.placa || '-'}<br>
-            🛠 Servicios: ${r.servicios || '-'} | 🔧 Repuesto: ${r.repuesto || '-'}<br>
-            💰 Costo: S/${costo.toFixed(2)} | 💳 Pago: ${r.metodo_pago ?? 'N/A'}<br>
-            📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}<br>
-            🔨 Mano de Obra: S/${manoObra.toFixed(2)} | 🧾 Comisión: S/${comision.toFixed(2)}
-          </li>`;
-      });
-
-      html += `
-            </ul>
+  let html = `
+    <div class="card shadow border border-dark">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="card-title mb-1">🧰 Motos atendidas por <strong>${nombre}</strong></h5>
           </div>
-        </div>`;
+          <button class="btn btn-sm btn-outline-danger" onclick="cerrarDetallesEmpleado()">✖️ Cerrar</button>
+        </div>
+        <ul class="list-group list-group-flush">`;
 
-      const detalles = document.getElementById('detalles-empleado');
-      detalles.innerHTML = html;
-      detalles.style.display = 'block';
-      detalles.scrollIntoView({ behavior: 'smooth' });
-    });
+  filtrados.forEach(r => {
+    const pago = parseFloat(r.costo) || 0;
+    const costoRepuesto = parseFloat(r.ganancia_repuesto) || 0;
+    const manoObra = parseFloat(r.costo_mano_obra) || 0;
+    const comision = calcularComision(r.rol, manoObra);
+
+    totalManoObra += manoObra;
+    totalComision += comision;
+
+    wspTexto += `
+🛵 ${r.marca} ${r.modelo}
+📅 ${new Date(r.fecha).toLocaleDateString('es-PE')} ⏰ ${r.hora}
+👤 Cliente: ${r.cliente} | 📞 Tel: ${r.telefono || '-'} | 🔢 Placa: ${r.placa || '-'}
+🛠 Servicios: ${r.servicios || '-'} | 🔧 Repuesto: ${r.repuesto || '-'}
+💰 Costo: S/${pago.toFixed(2)} | 💳 Pago: ${r.metodo_pago ?? 'N/A'}
+📦 Costo de Repuesto: S/${costoRepuesto.toFixed(2)}
+🔨 Mano de Obra: S/${manoObra.toFixed(2)} | 🧾 Comisión: S/${comision.toFixed(2)}\n`;
+
+    html += `
+  <li class="list-group-item">
+    🛵 <strong>${r.marca} ${r.modelo}</strong><br>
+    📅 ${new Date(r.fecha).toLocaleDateString('es-PE')} ⏰ ${r.hora}<br>
+    👤 Cliente: ${r.cliente} | 📞 Tel: ${r.telefono || '-'} | 🔢 Placa: ${r.placa || '-'}<br>
+    🛠 Servicios: ${r.servicios || '-'} | 🔧 Repuesto: ${r.repuesto || '-'}<br>
+    💰 Costo: S/${pago.toFixed(2)} | 💳 Pago: ${r.metodo_pago ?? 'N/A'}<br>
+    📦 Costo de Repuesto: S/${costoRepuesto.toFixed(2)}<br>
+    🔨 Mano de Obra: S/${manoObra.toFixed(2)} | 🧾 Comisión: S/${comision.toFixed(2)}
+  </li>`;
+  });
+
+  wspTexto = `🧰 Motos atendidas por ${nombre}
+🧼 Total: ${filtrados.length} | 🔨 Mano de Obra: S/${totalManoObra.toFixed(2)} | 🧾 Comisión: S/${totalComision.toFixed(2)}\n\n` + wspTexto;
+
+  html += `</ul>
+    <div class="mt-3 d-flex justify-content-between align-items-center">
+      <span class="fw-bold">🧼 Total: ${filtrados.length} | 🔨 Mano de Obra: S/${totalManoObra.toFixed(2)} | 🧾 Comisión: S/${totalComision.toFixed(2)}</span>
+      <a class="btn btn-success" target="_blank" href="https://wa.me/?text=${encodeURIComponent(wspTexto)}">📲 Enviar por WhatsApp</a>
+    </div>
+  </div></div>`;
+
+const detalles = document.getElementById('detalles-empleado');
+detalles.innerHTML = html;
+detalles.style.display = 'block';
+
+if (window.innerWidth > 768) {
+  detalles.scrollIntoView({ behavior: 'smooth', block: 'center' });
+} else {
+  // en móvil evitar cambios bruscos: solo desplazamos si NO se ve el panel
+  const rect = detalles.getBoundingClientRect();
+  const marginTop = 12; // pequeño margen
+  if (rect.top < 0 || rect.bottom > window.innerHeight - (parseInt(getComputedStyle(document.documentElement).getPropertyValue('--mobile-footer-height')) || 64)) {
+    // desplazamiento cuidadoso (no restauramos scroll original)
+    const topOffset = rect.top - marginTop;
+    window.scrollBy({ top: topOffset, left: 0, behavior: 'smooth' });
+  }
 }
+
+  // Obtener la posición actual del scroll
+  const scrollPosition = window.scrollY;
+  
+  // Forzar un reflow para estabilizar el layout
+  void detalles.offsetHeight;
+  
+  // Restaurar la posición del scroll después de un breve delay
+  setTimeout(() => {
+    window.scrollTo(0, scrollPosition);
+  }, 10);
+}
+
 
 function cerrarDetallesEmpleado() {
   const detalles = document.getElementById('detalles-empleado');
@@ -419,8 +2218,16 @@ document.getElementById('detalles-empleado').style.display = 'none';
     return;
   }
 
+  // Actualizar estadísticas
+  actualizarEstadisticas(registros);
+  
   // Reutiliza la lógica de cargarRegistrosHoy pero pásale los registros filtrados
   renderizarRegistros(registros, `entre ${inicio} y ${fin}`);
+}
+// helper: formatea números como S/XX.XX
+function formatCurrency(value) {
+  const num = Number(value) || 0;
+  return `S/${num.toFixed(2)}`;
 }
 
 function renderizarRegistros(registros, fechaTexto) {
@@ -430,172 +2237,272 @@ function renderizarRegistros(registros, fechaTexto) {
     return;
   }
 
+  // Resumen para WhatsApp / PDF
   let resumenTexto = `📋 *Resumen de lavados - ${fechaTexto}*\n🧼 Motos atendidas: ${registros.length}\n\n`;
 
-  let tabla = `
+  // PREPARAR HTML de tarjetas (UI)
+  let cardsHtml = `<div class="records-grid">`;
+
+  // PREPARAR HTML de tabla para PDF (oculta en UI)
+  let tablaPdf = `
     <div id="tabla-pdf" style="overflow-x:auto; padding: 10px;">
       <h5 class="text-center">Registros ${fechaTexto}</h5>
-      <table class="table table-bordered table-hover" style="
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-        text-align: center;
-        border: 1px solid #dee2e6;
-        background-color: white;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      ">
-<thead style="background-color: #212529; color: white;">
-  <tr>
-    <th>Fecha</th>
-    <th>Hora</th>
-    <th>Cliente</th>
-    <th>Teléfono</th>
-    <th>Moto</th>
-    <th>Cilindrada</th>
-    <th>Kilometraje</th>
-    <th>Empleado</th>
-    <th>Rol</th>
-    <th>Placa</th>
-    <th>Servicios</th>
-    <th>Método Pago</th>
-    <th>Pago</th>
-    <th>Costo Repuesto</th>
-    <th>Mano Obra</th>
-    <th>Comisión</th>
-    <th>Repuesto</th>
-    <th>Acciones</th>
-  </tr>
-</thead>
-
-        <tbody>`;
+      <table class="table table-bordered table-hover table-oculta-para-ui" style="width:100%; border-collapse:collapse; font-size:13px; text-align:center;">
+        <thead style="background-color:#212529; color:white;">
+          <tr>
+            <th>Fecha</th><th>Hora</th><th>Cliente</th><th>Teléfono</th><th>Moto</th><th>Cilindrada</th>
+            <th>Kilometraje</th><th>Empleado</th><th>Rol</th><th>Placa</th><th>Servicios</th><th>Método Pago</th>
+            <th>Pago</th><th>Costo Repuesto</th><th>Mano Obra</th><th>Comisión</th><th>Repuesto</th>
+          </tr>
+        </thead><tbody>`;
 
   const empleados = {};
   let totalGananciaKike = 0;
   let totalGananciaRepuesto = 0;
+  let totalPagos = 0;
 
-registros.forEach(r => {
-  const fechaFormateada = new Date(r.fecha).toLocaleDateString('es-PE');
+function getTimeFromDB(record) {
+  // Si el backend devolvió un campo `hora`, extraer HH:MM si tiene segundos u otro sufijo
+  if (record && record.hora) {
+    const hr = String(record.hora).trim();
+    // coincide con "HH:MM" o "H:MM" al comienzo (también funciona con "HH:MM:SS")
+    const m = hr.match(/^(\d{1,2}:\d{2})/);
+    if (m) return m[1];
+    // si no coincide, devolver el contenido tal cual (por si la BD guarda "12:30 pm", etc.)
+    return hr;
+  }
+  // fallback si no viene nada
+  return '-';
+}
+registros.forEach((r, idx) => {
+  const roleClass = getRoleBadgeClass(r.rol);
+  const fechaDate = r.fecha ? new Date(r.fecha) : null;
+  const fechaFormateada = fechaDate && !isNaN(fechaDate)
+    ? fechaDate.toLocaleDateString('es-PE')
+    : (r.fecha || '-');
+
+  // CALCULA timeStr AL INICIO (antes de usarlo)
+  const timeStr = getTimeFromDB(r);
+
   const empleado = r.empleado || 'Sin nombre';
   const costo = parseFloat(r.costo) || 0;
   const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
   const manoObra = parseFloat(r.costo_mano_obra) || 0;
-
-  // ✅ Ahora comisionEmpleado es un número
   const comisionEmpleado = calcularComision(r.rol, manoObra);
-
-  // Ganancia de Kike = lo que NO se lleva el empleado
-  const gananciaKike = manoObra - comisionEmpleado;
+const gananciaKike = manoObra - comisionEmpleado;
 
   totalGananciaKike += gananciaKike;
   totalGananciaRepuesto += gananciaRepuesto;
+  totalPagos += costo;
 
   if (!empleados[empleado]) {
     empleados[empleado] = { cantidad: 0, comision: 0, costos: [], manoObraTotal: 0, utilidad: 0 };
   }
-
   empleados[empleado].cantidad++;
   empleados[empleado].costos.push(costo);
   empleados[empleado].manoObraTotal += manoObra;
   empleados[empleado].comision += comisionEmpleado;
   empleados[empleado].utilidad += gananciaKike;
 
-  resumenTexto += `🛵 *${r.marca} ${r.modelo}*\n📅 ${fechaFormateada} ⏰ ${r.hora}\n👤 Cliente: ${r.cliente}\n🔢 Placa: ${r.placa || 'No registrada'}\n👨‍🔧 Empleado: ${r.empleado}\n🛠 Servicios: ${r.servicios || 'Ninguno'}\n🔧 Repuestos: ${r.repuesto || 'Ninguno'}\n💳 Pago: ${r.metodo_pago ?? 'N/A'}\n💰 Costo: S/${costo.toFixed(2)}\n🧾 Comisión: S/${comisionEmpleado.toFixed(2)}\n👑 Ganancia Kike: S/${gananciaKike.toFixed(2)}\n📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}\n🛠 Mano Obra: S/${manoObra.toFixed(2)}\n────────────────────\n`;
+  // Resumen WhatsApp (usa timeStr)
+  resumenTexto += `🛵 *${r.marca} ${r.modelo}*\n📅 ${fechaFormateada} ⏰ ${timeStr}\n👤 ${r.cliente}\n🔢 Placa: ${r.placa || 'No registrada'}\n💳 Pago: ${r.metodo_pago ?? 'N/A'}\n💰 Costo: S/${costo.toFixed(2)}\n🧾 Comisión: S/${comisionEmpleado.toFixed(2)}\n────────────────────\n`;
 
-tabla += `
-  <tr>
+  // Tarjeta UI (usa timeStr en lugar de r.hora)
+  const card = `
+    <div class="record-card" id="record-${r.id || idx}">
+      <div class="record-header">
+        <div class="record-left">
+          <div class="record-title">🛵 ${r.marca || '-'} ${r.modelo || ''}</div>
+          <div class="record-meta">${fechaFormateada} · ${timeStr}</div>
+        </div>
+        <div class="record-actions">
+          <span class="record-badge ${roleClass}">${r.rol || '-'}</span>
+          <button class="btn btn-sm btn-outline-secondary btn-sm-ico" onclick="editarRegistro(${r.id})">✏️</button>
+          <button class="btn btn-sm btn-outline-danger btn-sm-ico" onclick="eliminarRegistro(${r.id})">🗑️</button>
+        </div>
+      </div>
+
+      <div class="record-groups">
+        <div class="record-block">
+          <div class="record-row">
+            <div class="record-label">Cliente</div>
+            <div class="record-value"><span class="info-box">${r.cliente || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Teléfono</div>
+            <div class="record-value"><span class="info-box">${r.telefono || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Placa</div>
+            <div class="record-value"><span class="info-box">${r.placa || '-'}</span></div>
+          </div>
+
+          <!-- Aquí movemos Cilindrada + Empleado justo debajo de Kilometraje -->
+          <div class="record-row">
+            <div class="record-label">Kilometraje</div>
+            <div class="record-value"><span class="info-box">${r.kilometraje || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Cilindrada</div>
+            <div class="record-value"><span class="info-box">${r.cilindrada || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Empleado</div>
+            <div class="record-value"><span class="info-box">${r.empleado || '-'}</span></div>
+          </div>
+        </div>
+
+        <div class="record-block">
+          <div class="record-row">
+            <div class="record-label">Servicios</div>
+            <div class="record-value"><span class="info-box">${r.servicios || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Repuesto</div>
+            <div class="record-value"><span class="info-box">${r.repuesto || '-'}</span></div>
+          </div>
+          <div class="record-row">
+            <div class="record-label">Método Pago</div>
+            <div class="record-value"><span class="info-box">${r.metodo_pago ?? 'N/A'}</span></div>
+          </div>
+
+          <div class="record-row">
+            <div class="record-label">Montos</div>
+            <div class="record-value">
+              <div class="pricing-grid">
+                <div class="price-box"><span class="label">Total</span><span class="value">${formatCurrency(costo)}</span></div>
+                <div class="price-box"><span class="label">Mano de obra</span><span class="value">${formatCurrency(manoObra)}</span></div>
+                <div class="price-box"><span class="label">Repuesto</span><span class="value">${formatCurrency(gananciaRepuesto)}</span></div>
+                <div class="price-box"><span class="label">Comisión</span><span class="value">${formatCurrency(comisionEmpleado)}</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  `;
+  cardsHtml += card;
+
+  // fila para tabla PDF (usa timeStr)
+  tablaPdf += `<tr>
     <td>${fechaFormateada}</td>
-    <td>${r.hora}</td>
+    <td>${timeStr}</td>
     <td>${r.cliente}</td>
     <td>${r.telefono || '-'}</td>
-    <td>${r.marca} ${r.modelo}</td>
+    <td>${r.marca || ''} ${r.modelo || ''}</td>
     <td>${r.cilindrada || '-'}</td>
-    <td>${r.kilometraje || '-'}</td>
-    <td>${r.empleado}</td>
+    <td class="numeric">${r.kilometraje || '-'}</td>
+    <td>${r.empleado || '-'}</td>
     <td>${r.rol || '-'}</td>
     <td>${r.placa || '-'}</td>
     <td>${r.servicios || '-'}</td>
     <td>${r.metodo_pago ?? 'N/A'}</td>
-    <td>S/${costo.toFixed(2)}</td>
-    <td>S/${gananciaRepuesto.toFixed(2)}</td>
-    <td>S/${manoObra.toFixed(2)}</td>
-    <td>S/${comisionEmpleado.toFixed(2)}</td>
+    <td class="numeric">${formatCurrency(costo)}</td>
+    <td class="numeric">${formatCurrency(gananciaRepuesto)}</td>
+    <td class="numeric">${formatCurrency(manoObra)}</td>
+    <td class="numeric">${formatCurrency(comisionEmpleado)}</td>
     <td>${r.repuesto || '-'}</td>
-    <td>
-      <button class="btn btn-warning btn-sm me-2" onclick="editarRegistro(${r.id})">✏️</button>
-      <button class="btn btn-danger btn-sm" onclick="eliminarRegistro(${r.id})">🗑️</button>
-    </td>
   </tr>`;
+});
 
+  cardsHtml += `</div>`; // cierre records-grid
+  tablaPdf += `</tbody></table></div>`; // cierre tabla pdf
 
-
-  });
-
-  tabla += '</tbody></table>';
-
-  tabla += `
-    <h5 class="mt-4 mb-2">📊 Resumen por trabajador (PDF)</h5>
-    <table class="table table-bordered">
-      <thead class="table-dark">
-        <tr><th>Empleado</th>
-          <th>Motos Atendidas</th>
-          <th>Costos</th>
-          <th>Total Bruto</th>
-          <th>Comisión</th>
-          <th>Mano de Obra</th>
-          <th>Utilidad</th>
-          </tr>
-      </thead><tbody>`;
+  // Construir resumen por trabajador (cards + tabla)
+  let workerCardsHtml = `<div class="worker-summary">`;
+  let workerTableHtml = `
+    <div class="mt-4">
+      <h5>📊 Resumen por trabajador (PDF)</h5>
+      <table class="table-worker">
+        <thead>
+          <tr><th>Empleado</th><th>Motos Atend.</th><th>Total Pagos</th><th>Mano Obra</th><th>Comisión</th></tr>
+        </thead>
+        <tbody>
+  `;
 
   Object.entries(empleados).forEach(([nombre, data]) => {
-    const totalBruto = data.costos.reduce((a, b) => a + b, 0);
-    const porcentaje = nombre.toLowerCase() === 'kike' ? 100 : 50;
-    tabla += `
-      <tr style="cursor: pointer;" onclick='mostrarDetallesEmpleadoFiltrado("${nombre}", ${JSON.stringify(registros)})'>
-        <td>${nombre}</td><td>${data.cantidad}</td>
-        <td>${data.costos.map((c, i) => `${i + 1}° S/${c.toFixed(2)}`).join(', ')}</td>
-        <td>S/${totalBruto.toFixed(2)}</td><td>(${porcentaje}%) S/${data.comision.toFixed(2)}</td>
-        <td>S/${data.manoObraTotal.toFixed(2)}</td><td>S/${data.utilidad.toFixed(2)}</td>
-      </tr>`;
+    const totalPagosEmpleado = data.costos.reduce((a,b)=>a+b,0);
+    // worker card (clickable)
+    workerCardsHtml += `
+      <div class="worker-card" data-employee="${nombre}">
+        <div class="worker-name">👨‍🔧 ${nombre} <span class="worker-tag">${data.cantidad}</span></div>
+        <div class="worker-info-row"><div>Total Pagos</div><div><span class="info-box">S/${totalPagosEmpleado.toFixed(2)}</span></div></div>
+        <div class="worker-info-row"><div>Mano de Obra</div><div><span class="info-box">S/${data.manoObraTotal.toFixed(2)}</span></div></div>
+        <div class="worker-info-row"><div>Comisión</div><div><span class="info-box">S/${data.comision.toFixed(2)}</span></div></div>
+      </div>
+    `;
+
+    // worker table row
+    workerTableHtml += `
+      <tr class="worker-row" data-employee="${nombre}" style="cursor:pointer;">
+        <td>${nombre}</td>
+        <td>${data.cantidad}</td>
+        <td>S/${totalPagosEmpleado.toFixed(2)}</td>
+        <td>S/${data.manoObraTotal.toFixed(2)}</td>
+        <td>S/${data.comision.toFixed(2)}</td>
+      </tr>
+    `;
   });
 
-  tabla += '</tbody></table></div>';
-  tabla += '<div id="detalles-empleado" class="mt-4"></div>';
+  workerCardsHtml += `</div>`;
+  workerTableHtml += `</tbody></table></div>`;
 
+  // Resumen visible (arriba)
   const resumenGanancias = `
     <div class="alert alert-success d-flex justify-content-between align-items-center p-3 mb-3 shadow-sm rounded" style="font-size: 16px;">
-      <div>
-        👑 <strong>Ganancia ZonaBiker:</strong> <span style="font-size: 18px;">S/${totalGananciaKike.toFixed(2)}</span>
-      </div>
-      <div>
-        📦 <strong>Ganancia Repuestos:</strong> <span style="font-size: 18px; color: #0d6efd;">S/${totalGananciaRepuesto.toFixed(2)}</span>
-      </div>
+      <div>💰 <strong>Total Pagos Recibidos:</strong> <span style="font-size: 18px;">S/${totalPagos.toFixed(2)}</span></div>
+      <div>📦 <strong>Ganancia Repuestos:</strong> <span style="font-size: 18px; color: #0d6efd;">S/${totalGananciaRepuesto.toFixed(2)}</span></div>
     </div>`;
-    let tituloTabla = document.createElement("h4");
-      tituloTabla.className = "text-center mb-3 text-primary";
-      tituloTabla.textContent = `🗓️ Mostrando registros ${fechaTexto}`;
-      contenedor.prepend(tituloTabla);
 
-contenedor.innerHTML = resumenGanancias + tabla;
-contenedor.insertAdjacentElement("afterbegin", tituloTabla); // ✅ más seguro
+  // Título
+  const tituloTabla = document.createElement("h4");
+  tituloTabla.className = "text-center mb-3 text-primary";
+  tituloTabla.textContent = `🗓️ Mostrando registros ${fechaTexto}`;
 
+  // Renderizar TODO
+  contenedor.innerHTML = '';
+  contenedor.appendChild(tituloTabla);
+  contenedor.insertAdjacentHTML('beforeend', resumenGanancias + cardsHtml + tablaPdf + `<div class="section-divider"></div>` + workerCardsHtml + workerTableHtml);
 
-  // PDF botón
-  document.getElementById('btn-pdf').addEventListener('click', () => {
-    const contenido = document.getElementById('tabla-pdf');
-    const opt = {
-      margin: [0.3, 0.3, 0.3, 0.3],
-      filename: `registros-${fechaTexto}.pdf`,
-      image: { type: 'jpeg', quality: 1 },
-      html2canvas: { scale: 4 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-    };
-    html2pdf().set(opt).from(contenido).save();
+  // Listeners para worker-cards y filas (muestran detalles del empleado)
+  document.querySelectorAll('.worker-card, .worker-row').forEach(el => {
+    el.addEventListener('click', function() {
+      const nombre = this.getAttribute('data-employee');
+      if (nombre) mostrarDetallesEmpleado(nombre, registros);
+      // llevar el foco al panel de detalles (ya hace scroll la función)
+    });
   });
 
+  // PDF botón (arreglado: usa "contenido")
+  const btnPdf = document.getElementById('btn-pdf');
+  if (btnPdf) {
+    // remover listeners anteriores para evitar duplicados
+    const nuevoBtnPdf = btnPdf.cloneNode(true);
+    btnPdf.parentNode.replaceChild(nuevoBtnPdf, btnPdf);
+    nuevoBtnPdf.addEventListener('click', () => {
+      const contenido = document.getElementById('tabla-pdf');
+      const opt = {
+        margin: [0.3, 0.3, 0.3, 0.3],
+        filename: `registros-${fechaTexto}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 4 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+      };
+      html2pdf().set(opt).from(contenido).save();
+    });
+  }
+
   // WhatsApp resumen
-  document.getElementById('btn-wsp').href =
-    `https://wa.me/?text=${encodeURIComponent(resumenTexto)}`;
+  const btnWsp = document.getElementById('btn-wsp');
+  if (btnWsp) {
+    btnWsp.href = `https://wa.me/?text=${encodeURIComponent(resumenTexto)}`;
+  }
 }
+// Al final de renderizarRegistros
+updateFooterTimestamp(registros.length);
+
 
 
 </script>
@@ -694,6 +2601,33 @@ document.querySelectorAll('.metodo-pago').forEach(checkbox => {
 // Inicializar fecha y hora actual
 document.getElementById('fecha').valueAsDate = new Date();
 document.getElementById('hora').value = new Date().toTimeString().substring(0, 5);
+function getRoleBadgeClass(rol) {
+  if (!rol) return 'role-badge-default';
+  const key = rol.toString().trim().toLowerCase();
+  switch (key) {
+    case 'jefe': return 'role-badge-jefe';
+    case 'tecnico':
+    case 'técnico': return 'role-badge-tecnico';
+    case 'auxiliar': return 'role-badge-auxiliar';
+    case 'ayudante': return 'role-badge-ayudante';
+    case 'practicante': return 'role-badge-practicante';
+    default: return 'role-badge-default';
+  }
+}
+
+// Actualiza footer: contador y timestamp
+function updateFooterTimestamp(totalRegistros = 0) {
+  const fc = document.getElementById('footer-count');
+  const fu = document.getElementById('footer-updated');
+  if (fc) fc.textContent = totalRegistros;
+  if (fu) fu.textContent = new Date().toLocaleTimeString();
+}
+
+</script>
+<script>
+  // Actualizar año en footer
+  const yEl = document.getElementById('current-year-footer');
+  if (yEl) yEl.textContent = new Date().getFullYear();
 </script>
 </body>
 </html>

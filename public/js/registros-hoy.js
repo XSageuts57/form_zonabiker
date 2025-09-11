@@ -108,55 +108,7 @@ async function guardarEdicion() {
 }
 
 
-function mostrarDetallesEmpleado(nombre, fecha) {
-  fetch('/api/registros')
-    .then(res => res.json())
-    .then(registros => {
-      const filtrados = registros.filter(r => {
-        const fechaR = new Date(r.fecha).toLocaleDateString('es-PE');
-        return r.empleado === nombre && fechaR === fecha;
-      });
-      if (filtrados.length === 0) return;
 
-      let totalManoObra = 0;
-      let totalComision = 0;
-      let html = `
-        <div class="card shadow border border-dark">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h5 class="card-title mb-1">🧰 Motos atendidas por <strong>${nombre}</strong> el ${fecha}</h5>
-              </div>
-              <button class="btn btn-sm btn-outline-danger" onclick="cerrarDetallesEmpleado()">✖️ Cerrar</button>
-            </div>
-            <ul class="list-group list-group-flush">`;
-
-      filtrados.forEach(r => {
-        const pago = parseFloat(r.costo) || 0;
-        const costoRepuesto = parseFloat(r.ganancia_repuesto) || 0;
-        const manoObra = parseFloat(r.costo_mano_obra) || 0;
-        const { comision } = calcularComision(r.rol, manoObra);
-        totalManoObra += manoObra;
-        totalComision += comision;
-
-        html += `
-          <li class="list-group-item">
-            🛵 <strong>${r.marca} ${r.modelo}</strong><br>
-            📅 ${new Date(r.fecha).toLocaleDateString('es-PE')} ⏰ ${r.hora}<br>
-            👤 Cliente: ${r.cliente} | 🔢 Placa: ${r.placa || '-'}<br>
-            🛠 Servicios: ${r.servicios || '-'} | 🔧 Repuesto: ${r.repuesto || '-'}<br>
-            💳 Pago: S/${pago.toFixed(2)} | 📦 Costo Repuesto: S/${costoRepuesto.toFixed(2)}<br>
-            🔨 Mano de Obra: S/${manoObra.toFixed(2)} | 🧾 Comisión: S/${comision.toFixed(2)}
-          </li>`;
-      });
-
-      html += `</ul></div></div>`;
-      const detalles = document.getElementById('detalles-empleado');
-      detalles.innerHTML = html;
-      detalles.style.display = 'block';
-      detalles.scrollIntoView({ behavior: 'smooth' });
-    });
-}
 
 function cerrarDetallesEmpleado() {
   const detalles = document.getElementById('detalles-empleado');
@@ -165,66 +117,6 @@ function cerrarDetallesEmpleado() {
   detalles.style.display = 'none';
 }
 
-function mostrarDetallesEmpleadoFiltrado(nombre, registrosFiltrados) {
-  if (!registrosFiltrados || registrosFiltrados.length === 0) return;
-
-  const filtrados = registrosFiltrados.filter(r => r.empleado === nombre);
-
-  if (filtrados.length === 0) return;
-
-  let totalManoObra = 0;
-  let totalComision = 0;
-
-  filtrados.forEach(r => {
-    const costo = parseFloat(r.costo) || 0;
-    const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
-    const manoObra = costo - gananciaRepuesto;
-    const { comision } = calcularComision(r.rol, manoObra);
-    totalManoObra += manoObra;
-    totalComision += comision;
-  });
-
-  let html = `
-    <div class="card shadow border border-dark">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h5 class="card-title mb-1">🧰 Motos atendidas por <strong>${nombre}</strong></h5>
-            <p class="mb-0 text-muted">
-              🧼 Total: ${filtrados.length} | 
-              🔨 Mano de Obra: <strong>S/${totalManoObra.toFixed(2)}</strong> | 
-              🧾 Comisión: <strong>S/${totalComision.toFixed(2)}</strong>
-            </p>
-          </div>
-          <button class="btn btn-sm btn-outline-danger" onclick="cerrarDetallesEmpleado()">✖️ Cerrar</button>
-        </div>
-        <ul class="list-group list-group-flush">`;
-
-  filtrados.forEach(r => {
-    const costo = parseFloat(r.costo) || 0;
-    const gananciaRepuesto = parseFloat(r.ganancia_repuesto) || 0;
-    const manoObra = costo - gananciaRepuesto;
-    const comision = (r.empleado.toLowerCase() === 'kike') ? 0 : manoObra * 0.5;
-
-    html += `
-      <li class="list-group-item">
-        🛵 <strong>${r.marca} ${r.modelo}</strong><br>
-        📅 ${new Date(r.fecha).toLocaleDateString('es-PE')} ⏰ ${r.hora}<br>
-        👤 Cliente: ${r.cliente} | 🔢 Placa: ${r.placa || '-'}<br>
-        🛠 Servicios: ${r.servicios || '-'} | 🔧 Repuesto: ${r.repuesto || '-'}<br>
-        💰 Costo: S/${costo.toFixed(2)} | 💳 Pago: ${r.metodo_pago ?? 'N/A'}<br>
-        📦 Ganancia Repuesto: S/${gananciaRepuesto.toFixed(2)}<br>
-        🔨 Mano de Obra: S/${manoObra.toFixed(2)} | 🧾 Comisión: S/${comision.toFixed(2)}
-      </li>`;
-  });
-
-  html += `</ul></div></div>`;
-
-  const detalles = document.getElementById('detalles-empleado');
-  detalles.innerHTML = html;
-  detalles.style.display = 'block';
-  detalles.scrollIntoView({ behavior: 'smooth' });
-}
 
 const roles = {
   "Jefe": { porcentaje: 1.0, color: "red", empleados: ["Kike"] },
@@ -302,14 +194,13 @@ form.addEventListener('submit', async (e) => {
 function calcularComision(rol, manoObra) {
   const porcentajes = {
     "Jefe": 1.0,
-    "Técnico": 0.7,
+    "Tecnico": 0.7,
     "Auxiliar": 0.5,
     "Ayudante": 0.3,
     "Practicante": 0.2
   };
   const porcentaje = porcentajes[rol] || 0;
-  const comision = manoObra * porcentaje;
-  return { comision };
+  return manoObra * porcentaje;
 }
 
 cargarRegistrosHoy();

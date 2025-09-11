@@ -79,8 +79,7 @@ function calcularComision(rol, costoMO) {
 }
 
 
-// 📋 Ruta para obtener todos los registros
-// 📋 Ruta para obtener registros (hoy por default)
+// 📋 Ruta para obtener registros (todos por default)
 app.get('/api/registros', async (req, res) => {
   const { desde, hasta } = req.query;
   let query;
@@ -95,11 +94,10 @@ app.get('/api/registros', async (req, res) => {
     `;
     params.push(desde, hasta);
   } else {
-    // ✅ Default → mostrar solo registros de hoy
+    // ✅ MODIFICADO: Mostrar TODOS los registros cuando no hay filtro
     query = `
       SELECT * FROM registros
-      WHERE DATE(fecha) = CURDATE()
-      ORDER BY hora DESC
+      ORDER BY fecha DESC, hora DESC
     `;
   }
 

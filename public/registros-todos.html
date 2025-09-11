@@ -2,353 +2,896 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>📋 Todos los Registros - Zona Biker</title>
+  <title>📋 Registros Completos - Zona Biker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-
 
   <style>
-    @media (min-width: 768px) {
-  .card .row > [class^="col-"] {
-    border-right: 1px solid #dee2e6;
-  }
-  .card .row > [class^="col-"]:last-child {
-    border-right: none;
-  }
-}
-
-    .chk-wsp {
-  transform: scale(1.8);
-  cursor: pointer;
-  accent-color: var(--rojo-zb);
-}
     :root {
       --rojo-zb: #ff4454;
       --dorado-zb: #d4af37;
       --negro-zb: #000;
-      --sombra: 0 4px 20px rgba(0, 0, 0, 0.15);
+      --gris-oscuro: #1a1a1a;
+      --gris-claro: #f8f9fa;
+      --sombra: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --sombra-hover: 0 15px 35px rgba(0, 0, 0, 0.2);
+      --transicion: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    
-body {
-  background-color: #f8f9fa;
-  font-family: 'Poppins', sans-serif; /* Nueva fuente más clara y redondeada */
-  font-size: 1.05rem; /* Tamaño de fuente más grande y legible */
-}
-    
-    /* Navbar personalizada */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: #333;
+      transition: var(--transicion);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-top: 10px; /* Espacio para la navbar fija */
+    }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #f1f1f1;
+    }
+
+    /* Navbar Premium */
     .navbar-zb {
-      background: linear-gradient(90deg, var(--negro-zb), #1a1a1a);
-      box-shadow: var(--sombra);
-      padding: 0.8rem 1rem;
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #1a1a1a 100%) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      padding: 12px 0;
     }
-    
-    .navbar-brand-zb {
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: white !important;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+    .navbar-zb::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb), var(--rojo-zb));
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease infinite;
     }
-    
-    /* Botones con efectos */
+
+    .navbar-zb .navbar-brand {
+      color: var(--dorado-zb) !important;
+      font-weight: 800;
+      font-size: 1.8rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-zb .navbar-brand i {
+      background: linear-gradient(45deg, var(--dorado-zb), #ffd700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: 10px;
+      font-size: 1.9rem;
+    }
+
+    .navbar-zb .nav-link {
+      color: #fff !important;
+      transition: var(--transicion);
+      font-weight: 500;
+      padding: 8px 15px !important;
+      border-radius: 6px;
+      margin: 0 5px;
+      position: relative;
+    }
+
+    .navbar-zb .nav-link::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--dorado-zb);
+      transition: var(--transicion);
+      transform: translateX(-50%);
+    }
+
+    .navbar-zb .nav-link:hover::before {
+      width: 70%;
+    }
+
+    .navbar-zb .nav-link:hover {
+      color: var(--dorado-zb) !important;
+      transform: translateY(-2px);
+    }
+
+    .navbar-zb .nav-link.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--dorado-zb) !important;
+    }
+
+    .navbar-zb .nav-link.active::before {
+      width: 70%;
+    }
+
+    /* Botones premium */
     .btn-zb {
-      transition: all 0.3s ease;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
       font-weight: 600;
       letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: var(--transicion);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      box-shadow: var(--sombra);
+    }
+
+    .btn-zb::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      z-index: -1;
+      transition: var(--transicion);
+      opacity: 0.5;
+    }
+
+    .btn-zb-primary {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      color: white;
+    }
+
+    .btn-zb-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+      color: white;
+    }
+
+    .btn-zb-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-zb-secondary {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
+      color: var(--negro-zb);
+    }
+
+    .btn-zb-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+      color: var(--negro-zb);
+    }
+
+    .btn-zb-outline {
+      background: transparent;
+      border: 2px solid var(--dorado-zb);
+      color: var(--dorado-zb);
+    }
+
+    .btn-zb-outline:hover {
+      background: var(--dorado-zb);
+      color: var(--negro-zb);
+    }
+
+    /* Tarjetas premium */
+    .card-zb {
+      border-radius: 16px;
       border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: var(--sombra);
+      transition: var(--transicion);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    body.dark-mode .card-zb {
+      background: #2a2a2a;
+    }
+
+    .card-zb:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .card-zb-header {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      font-weight: 700;
+      padding: 20px 24px;
+      border-bottom: 2px solid var(--dorado-zb);
       position: relative;
       overflow: hidden;
     }
-    
-    .btn-zb:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    .btn-zb:active {
-      transform: translateY(0);
-    }
-    
-    .btn-zb::after {
+
+    .card-zb-header::after {
       content: '';
       position: absolute;
-      top: 50%;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+
+    .card-zb-body {
+      padding: 24px;
+    }
+
+    /* Títulos premium */
+    .title-zb {
+      color: var(--negro-zb);
+      font-weight: 800;
+      position: relative;
+      padding-bottom: 16px;
+      margin: 30px 0;
+      text-align: center;
+      font-size: 2.2rem;
+    }
+
+    .title-zb::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
       left: 50%;
-      width: 5px;
+      transform: translateX(-50%);
+      width: 100px;
       height: 5px;
-      background: rgba(255,255,255,0.5);
-      opacity: 0;
-      border-radius: 100%;
-      transform: scale(1, 1) translate(-50%);
-      transform-origin: 50% 50%;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb));
+      border-radius: 3px;
     }
-    
-    .btn-zb:focus:not(:active)::after {
-      animation: ripple 0.6s ease-out;
+
+    body.dark-mode .title-zb {
+      color: #f1f1f1;
     }
-    
-    @keyframes ripple {
-      0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-      }
-      100% {
-        transform: scale(20, 20);
-        opacity: 0;
-      }
+
+    /* Formularios premium */
+    .form-control-zb {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: var(--transicion);
+      font-weight: 500;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
     }
-    
-    .btn-rojo {
-      background-color: var(--rojo-zb);
+
+    .form-control-zb:focus {
+      border-color: var(--dorado-zb);
+      box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+      transform: translateY(-2px);
+    }
+
+    body.dark-mode .form-control-zb {
+      background-color: #333;
+      border-color: #444;
+      color: #f1f1f1;
+    }
+
+    /* Badges premium */
+    .badge-zb {
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge-zb-rojo {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
       color: white;
     }
-    
-    .btn-dorado {
-      background-color: var(--dorado-zb);
+
+    .badge-zb-dorado {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
       color: var(--negro-zb);
     }
-    
-    .btn-negro {
-      background-color: var(--negro-zb);
-      color: white;
+
+    /* Checkboxes personalizados */
+    .chk-wsp {
+      transform: scale(1.5);
+      cursor: pointer;
+      accent-color: var(--rojo-zb);
     }
-    
-    /* Tarjetas y contenedores */
-    .card-zb {
-      border: none;
-      border-radius: 12px;
-      box-shadow: var(--sombra);
-      transition: all 0.3s ease;
+
+    /* Tabla premium */
+    .table-container {
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: var(--sombra);
+      margin-bottom: 24px;
     }
-    
-    .card-zb:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    
-    /* Tablas mejoradas */
+
     .table-zb {
       border-collapse: separate;
       border-spacing: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--sombra);
+      width: 100%;
+      margin: 0;
+    }
+
+    .table-zb thead th {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      font-weight: 600;
+      padding: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .table-zb thead th::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rojo-zb), var(--dorado-zb));
+    }
+
+    .table-zb tbody td {
+      padding: 16px;
+      vertical-align: middle;
+      border: none;
+      border-bottom: 1px solid #e0e0e0;
+      background-color: white;
+      transition: var(--transicion);
+      font-size: 0.95rem;
+    }
+
+    body.dark-mode .table-zb tbody td {
+      background-color: #2a2a2a;
+      color: #f1f1f1;
+      border-bottom: 1px solid #444;
+    }
+
+    .table-zb tbody tr {
+      transition: var(--transicion);
+    }
+
+    .table-zb tbody tr:hover {
+      transform: translateX(5px);
+    }
+
+    .table-zb tbody tr:hover td {
+      background-color: rgba(255, 68, 84, 0.05);
+    }
+
+    body.dark-mode .table-zb tbody tr:hover td {
+      background-color: rgba(255, 68, 84, 0.1);
+    }
+
+    /* Estilos para badges de roles */
+    .badge-jefe { 
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white; 
+    }
+    .badge-tecnico { 
+      background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+      color: white; 
+    }
+    .badge-auxiliar { 
+      background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+      color: white; 
+    }
+    .badge-ayudante { 
+      background: linear-gradient(135deg, #6f42c1 0%, #5a2d95 100%);
+      color: white; 
+    }
+    .badge-practicante { 
+      background: linear-gradient(135deg, #fd7e14 0%, #e66407 100%);
+      color: white; 
+    }
+    .badge-default { 
+      background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+      color: white; 
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
-    .table-zb thead th {
-      background: linear-gradient(135deg, var(--negro-zb), #333);
-      color: white;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-size: 1rem;
-      padding: 18px;
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* Efectos especiales */
+    .zb-glow {
+      position: relative;
+    }
+
+    .zb-glow::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      background: linear-gradient(45deg, var(--rojo-zb), var(--dorado-zb), var(--rojo-zb));
+      background-size: 200% 200%;
+      border-radius: inherit;
+      animation: gradientShift 3s ease infinite;
+      filter: blur(8px);
+      opacity: 0.7;
+    }
+
+    /* Mejoras visuales adicionales */
+    .zb-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--dorado-zb), transparent);
+      margin: 30px 0;
       border: none;
     }
-    
-    .table-zb tbody tr {
-      font-size: 1.05rem;
-      transition: all 0.2s ease;
+
+    .zb-highlight {
+      background: linear-gradient(120deg, rgba(255, 68, 84, 0.1) 0%, rgba(212, 175, 55, 0.1) 100%);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--rojo-zb);
+    }
+
+    body.dark-mode .zb-highlight {
+      background: linear-gradient(120deg, rgba(255, 68, 84, 0.15) 0%, rgba(212, 175, 55, 0.15) 100%);
+    }
+
+    /* Scroll personalizado */
+    ::-webkit-scrollbar {
+      width: 10px;
     }
     
-    .table-zb tbody tr:hover {
-  background-color: rgba(255, 68, 84, 0.08); /* Resaltado más notorio */
-  transform: scale(1.003)
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
     }
     
-    .table-zb td, .table-zb th {
-      vertical-align: middle;
-      padding: 12px 15px;
-      border-bottom: 1px solid #eee;
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      border-radius: 10px;
     }
     
-    /* Efectos de entrada */
-    .animate-entrada {
-      animation: fadeIn 0.7s ease-out;
+    body.dark-mode ::-webkit-scrollbar-track {
+      background: #2a2a2a;
     }
-    @keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
+    
+    body.dark-mode ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--dorado-zb) 0%, #c69c2d 100%);
+    }
+
+    /* Responsive mejoras */
+    @media (max-width: 992px) {
+      .title-zb {
+        font-size: 1.8rem;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+      
+      .title-zb {
+        font-size: 1.6rem;
+      }
+      
+      .btn-zb {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+      }
+      
+      .table-responsive {
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      
+      .table-zb thead {
+        display: none;
+      }
+      
+      .table-zb tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .table-zb tbody td {
+        display: block;
+        text-align: right;
+        padding: 12px 15px;
+        position: relative;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      
+      .table-zb tbody td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        color: var(--rojo-zb);
+      }
+      
+      body.dark-mode .table-zb tbody td::before {
+        color: var(--dorado-zb);
+      }
+      
+      .card-zb {
+        margin-bottom: 15px;
       }
     }
-    
-    /* Modo oscuro */
-    body.dark-mode {
-      background-color: #121212;
-      color: #f1f1f1;
+
+    /* Efecto de carga */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: var(--dorado-zb);
+      animation: spin 1s ease-in-out infinite;
     }
-    
-    body.dark-mode .card-zb {
-      background-color: #1e1e1e;
-      color: #f1f1f1;
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
-    
-    body.dark-mode .table-zb tbody tr {
-      background-color: #1e1e1e;
-      color: #f1f1f1;
+
+    /* Footer */
+    .footer-zb {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #1a1a1a 100%);
+      color: white;
+      padding: 20px 0;
+      margin-top: 40px;
+      border-top: 2px solid var(--dorado-zb);
     }
-    
-    body.dark-mode .table-zb tbody tr:hover {
-      background-color: rgba(212, 175, 55, 0.2);
+
+    /* Filtros avanzados */
+    .filtros-avanzados {
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--sombra);
+      margin-bottom: 25px;
     }
-    
-    body.dark-mode .table-zb td {
-      border-bottom: 1px solid #333;
+
+    body.dark-mode .filtros-avanzados {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
     }
-    
-    /* Checkboxes personalizados */
-    .form-check-input:checked {
-      background-color: var(--rojo-zb);
-      border-color: var(--rojo-zb);
+
+    /* Tarjetas de estadísticas */
+    .stat-card {
+      background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: var(--transicion);
+      border-top: 4px solid var(--rojo-zb);
+      box-shadow: var(--sombra);
     }
-    
-    /* Inputs y selects */
-    .form-control, .form-select {
-      border-radius: 8px;
-      padding: 10px 15px;
-      border: 1px solid #ddd;
-      transition: all 0.3s ease;
-      font-size: 1.05rem;
-      box-shadow: 0 0 5px rgba(255, 68, 84, 0.1); /* Ligero brillo en reposo */
-      background-color: #fff;
+
+    body.dark-mode .stat-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #333 100%);
     }
-    
-.form-control:focus, .form-select:focus {
-  border-color: var(--rojo-zb);
-  box-shadow: 0 0 10px rgba(255, 68, 84, 0.6); /* Brillo rojito */
-}
-    
-    /* Badges */
-    .badge-zb {
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--dorado-zb);
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--rojo-zb);
+      margin-bottom: 5px;
+    }
+
+    body.dark-mode .stat-value {
+      color: var(--dorado-zb);
+    }
+
+    .stat-label {
       font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 8px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
     }
-    .card-zb, .table-zb {
-  border-radius: 16px;
-}
 
-input.form-control, select.form-select {
-  border-radius: 10px;
-}
-.card-zb.bg-white {
-  border: 2px solid rgba(255, 68, 84, 0.1);
-  box-shadow: 0 0 15px rgba(255, 68, 84, 0.1);
-}
+    /* Botones de acción flotantes */
+    .action-buttons {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
+    .action-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--sombra);
+      transition: var(--transicion);
+      font-size: 1.5rem;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.1);
+      box-shadow: var(--sombra-hover);
+    }
+
+    /* Modal personalizado */
+    .modal-zb .modal-content {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid var(--dorado-zb);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-zb .modal-header {
+      background: linear-gradient(135deg, var(--negro-zb) 0%, #2c2c2c 100%);
+      color: var(--dorado-zb);
+      border-bottom: 2px solid var(--dorado-zb);
+      padding: 20px;
+    }
+
+    .modal-zb .modal-title {
+      font-weight: 700;
+    }
+
+    .modal-zb .modal-body {
+      padding: 24px;
+    }
+
+    .modal-zb .modal-footer {
+      border-top: 1px solid #e0e0e0;
+      padding: 20px;
+    }
+
+    body.dark-mode .modal-zb .modal-footer {
+      border-top: 1px solid #444;
+    }
+
+    /* Paginación personalizada */
+    .pagination-zb .page-link {
+      color: var(--negro-zb);
+      border: 1px solid var(--dorado-zb);
+      margin: 0 5px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .pagination-zb .page-item.active .page-link {
+      background: linear-gradient(135deg, var(--rojo-zb) 0%, #e63e4d 100%);
+      border-color: var(--rojo-zb);
+      color: white;
+    }
+
+    .pagination-zb .page-link:hover {
+      background-color: var(--dorado-zb);
+      color: var(--negro-zb);
+    }
   </style>
 </head>
 
-<body>
+<body class="bg-light">
   <!-- 🔝 Navbar Premium -->
-  <nav class="navbar navbar-expand-lg navbar-zb sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-zb fixed-top">
     <div class="container">
-      <a class="navbar-brand navbar-brand-zb animate__animated animate__fadeInLeft" href="/">
-        <span style="color: var(--dorado-zb)">🏍️</span> ZONA BIKER
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-motorcycle"></i> Zona Biker
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/">🏠 Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/registros-hoy">📅 Hoy</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active text-white fw-bold" href="/registros-todos">📋 Todos</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="/registros-hoy"><i class="fas fa-calendar-day me-1"></i> Hoy</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/registros-todos"><i class="fas fa-history me-1"></i> Todos</a></li>
         </ul>
-        <button id="toggle-dark" class="btn btn-sm btn-dorado ms-3 animate__animated animate__fadeIn">
-          🌙 Modo Oscuro
+        <button id="toggle-dark" class="btn btn-zb-outline ms-3">
+          <i class="fas fa-moon me-1"></i> Modo Oscuro
         </button>
       </div>
     </div>
   </nav>
 
   <!-- 🧾 Contenido Principal -->
-  <div class="container my-5 animate-entrada">
-    <div class="row justify-content-center mb-5">
-      <div class="col-lg-25">
-        <h2 class="text-center mb-4 fw-bold text-uppercase" style="color: var(--rojo-zb)">
-          📋 Registro Completo de Servicios
-        </h2>
-        
-        <!-- Barra de Acciones -->
-        <div class="card-zb bg-white mb-4 p-3">
-          <div class="row g-3 align-items-center">
-            <div class="col-md-4">
-              <label class="form-label fw-bold">📆 Desde:</label>
-              <input type="date" id="filtro-desde" class="form-control shadow-sm">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-bold">📆 Hasta:</label>
-              <input type="date" id="filtro-hasta" class="form-control shadow-sm">
-            </div>
-            <div class="col-md-4 d-flex align-items-end">
-              <button onclick="filtrarPorFechas()" 
-                class="btn btn-negro w-100 btn-zb animate__animated animate__pulse animate__infinite animate__slower">
-                🔍 Filtrar
-              </button>
-            </div>
-          </div>
-          
-          <div class="row mt-3 g-3">
-            <div class="col-md-8">
-              <input type="text" id="buscador-registros" class="form-control shadow-sm" 
-                placeholder="🔎 Buscar por cliente, empleado, moto, placa o fecha...">
-            </div>
-            <div class="col-md-4">
-              <div class="d-flex align-items-center h-100">
-                <div class="form-check form-switch me-3">
-                  <input class="form-check-input" type="checkbox" id="check-todos" style="width: 3em; height: 1.5em;">
-                  <label class="form-check-label fw-bold" for="check-todos">Seleccionar todos</label>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div class="container mt-5 pt-4">
+    <h2 class="text-center title-zb mb-4 fade-in">
+      <i class="fas fa-history me-2"></i>Registros Completos
+    </h2>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4 fade-in">
+      <div class="col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-motorcycle"></i></div>
+          <div class="stat-value" id="total-registros">0</div>
+          <div class="stat-label">Total Registros</div>
         </div>
-        
-        <!-- Botones de Acción -->
-        <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-          <button id="btn-pdf" class="btn btn-negro btn-zb px-4">
-            📄 Generar PDF
-          </button>
-          <a id="btn-wsp" target="_blank" class="btn btn-dorado btn-zb px-4">
-            📤 Compartir por WhatsApp
-          </a>
-          <button id="btn-eliminar" class="btn btn-rojo btn-zb px-4">
-            🗑️ Eliminar seleccionados
-          </button>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-tools"></i></div>
+          <div class="stat-value" id="total-servicios">0</div>
+          <div class="stat-label">Servicios Realizados</div>
         </div>
-        
-        <!-- Contenedor de Registros -->
-        <div id="contenedor-registros" class="card-zb bg-white p-0 overflow-hidden"></div>
-        
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-value" id="total-empleados">3</div>
+          <div class="stat-label">Empleados Activos</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fas fa-calendar"></i></div>
+          <div class="stat-value" id="total-dias">0</div>
+          <div class="stat-label">Días Registrados</div>
+        </div>
       </div>
     </div>
+
+    <!-- Filtros Avanzados -->
+    <div class="card-zb mb-4 fade-in">
+      <div class="card-zb-header">
+        <i class="fas fa-filter me-2"></i>Filtros Avanzados
+      </div>
+      <div class="card-zb-body">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-calendar me-1"></i> Desde:</label>
+            <input type="date" id="filtro-desde" class="form-control form-control-zb">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-calendar me-1"></i> Hasta:</label>
+            <input type="date" id="filtro-hasta" class="form-control form-control-zb">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-user me-1"></i> Empleado:</label>
+            <select id="filtro-empleado" class="form-select form-control-zb">
+              <option value="">Todos los empleados</option>
+              <option value="Fabrizio">Fabrizio</option>
+              <option value="Kike">Kike</option>
+              <option value="Jose">Jose</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-tag me-1"></i> Rol:</label>
+            <select id="filtro-rol" class="form-select form-control-zb">
+              <option value="">Todos los roles</option>
+              <option value="Jefe">Jefe</option>
+              <option value="Tecnico">Técnico</option>
+              <option value="Auxiliar">Auxiliar</option>
+              <option value="Ayudante">Ayudante</option>
+              <option value="Practicante">Practicante</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row mt-2">
+          <div class="col-md-8 mb-2">
+            <label class="form-label fw-semibold"><i class="fas fa-search me-1"></i> Búsqueda:</label>
+            <input type="text" id="buscador-registros" class="form-control form-control-zb" 
+              placeholder="Buscar por cliente, moto, placa, servicio...">
+          </div>
+          <div class="col-md-4 mb-2 d-flex align-items-end">
+            <button class="btn btn-zb-primary w-100 me-2" onclick="aplicarFiltros()">
+              <i class="fas fa-filter me-1"></i> Aplicar Filtros
+            </button>
+            <button class="btn btn-zb-outline w-100" onclick="limpiarFiltros()">
+              <i class="fas fa-eraser me-1"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de Acción -->
+    <div class="d-flex justify-content-center mb-4 flex-wrap gap-3 fade-in">
+      <button id="btn-pdf" class="btn btn-zb-primary">
+        <i class="fas fa-file-pdf me-1"></i> Exportar PDF
+      </button>
+      <a id="btn-wsp" target="_blank" class="btn btn-zb-secondary">
+        <i class="fab fa-whatsapp me-1"></i> Compartir por WhatsApp
+      </a>
+      <button id="btn-eliminar" class="btn btn-zb-outline">
+        <i class="fas fa-trash me-1"></i> Eliminar Seleccionados
+      </button>
+      <div class="form-check form-switch d-flex align-items-center ms-3">
+        <input class="form-check-input chk-wsp" type="checkbox" id="check-todos">
+        <label class="form-check-label fw-semibold ms-2" for="check-todos">Seleccionar Todos</label>
+      </div>
+    </div>
+
+    <!-- Contenedor de Registros -->
+    <div id="contenedor-registros" class="fade-in"></div>
+    
+    <!-- Paginación -->
+    <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-center">
+      <ul class="pagination pagination-zb">
+        <li class="page-item disabled" id="btn-prev">
+          <a class="page-link" href="#" tabindex="-1">Anterior</a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item" id="btn-next">
+          <a class="page-link" href="#">Siguiente</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 
   <!-- Contenedor para Detalles -->
-  <div id="detalle-empleado" class="container mb-5"></div>
+  <div id="detalle-empleado" class="container mt-5"></div>
+
+  <!-- Botones de acción flotantes -->
+  <div class="action-buttons">
+    <button class="action-btn btn-zb-primary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+    <button class="action-btn btn-zb-secondary" onclick="cargarRegistrosTodos()">
+      <i class="fas fa-sync"></i>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-zb mt-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <h5 class="fw-bold"><i class="fas fa-motorcycle me-2"></i>Zona Biker</h5>
+          <p class="mb-0">Sistema de gestión de registros de servicios</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">© 2023 Zona Biker. Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
   <script src="js/html2pdf.bundle.min.js"></script>
   <script src="js/registros-todos.js"></script>
   
@@ -356,40 +899,52 @@ input.form-control, select.form-select {
     // Toggle modo oscuro
     document.getElementById('toggle-dark').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+      
       const btn = document.getElementById('toggle-dark');
       if (document.body.classList.contains('dark-mode')) {
-        btn.innerHTML = '☀️ Modo Claro';
-        btn.classList.remove('btn-dorado');
-        btn.classList.add('btn-negro');
+        btn.innerHTML = '<i class="fas fa-sun me-1"></i> Modo Claro';
+        btn.classList.remove('btn-zb-outline');
+        btn.classList.add('btn-zb-secondary');
       } else {
-        btn.innerHTML = '🌙 Modo Oscuro';
-        btn.classList.remove('btn-negro');
-        btn.classList.add('btn-dorado');
+        btn.innerHTML = '<i class="fas fa-moon me-1"></i> Modo Oscuro';
+        btn.classList.remove('btn-zb-secondary');
+        btn.classList.add('btn-zb-outline');
       }
     });
-    
-    // Efecto de ripple para botones
-    document.querySelectorAll('.btn-zb').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        let x = e.clientX - e.target.getBoundingClientRect().left;
-        let y = e.clientY - e.target.getBoundingClientRect().top;
-        
-        let ripples = document.createElement('span');
-        ripples.style.left = x + 'px';
-        ripples.style.top = y + 'px';
-        this.appendChild(ripples);
-        
-        setTimeout(() => {
-          ripples.remove();
-        }, 1000);
-      });
+
+    // Cargar preferencia de modo oscuro
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('toggle-dark').innerHTML = '<i class="fas fa-sun me-1"></i> Modo Claro';
+      document.getElementById('toggle-dark').classList.remove('btn-zb-outline');
+      document.getElementById('toggle-dark').classList.add('btn-zb-secondary');
+    }
+
+    // Inicializar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      cargarRegistrosTodos();
     });
-    
-    // Función de filtrado
-    function filtrarPorFechas() {
+
+    // Función para aplicar filtros
+    function aplicarFiltros() {
       const desde = document.getElementById('filtro-desde').value;
       const hasta = document.getElementById('filtro-hasta').value;
-      cargarRegistrosTodos(desde, hasta);
+      const empleado = document.getElementById('filtro-empleado').value;
+      const rol = document.getElementById('filtro-rol').value;
+      
+      cargarRegistrosTodos(desde, hasta, empleado, rol);
+    }
+
+    // Función para limpiar filtros
+    function limpiarFiltros() {
+      document.getElementById('filtro-desde').value = '';
+      document.getElementById('filtro-hasta').value = '';
+      document.getElementById('filtro-empleado').value = '';
+      document.getElementById('filtro-rol').value = '';
+      document.getElementById('buscador-registros').value = '';
+      
+      cargarRegistrosTodos();
     }
   </script>
 </body>
